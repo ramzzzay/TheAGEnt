@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using TheAGEnt.Domain.Entities;
 
 namespace TheAGEnt.Domain.Abstract
 {
-    interface IMainUserManager
+    public interface IMainUserManager
     {
         Task<IdentityResult> ChangePasswordAsync(string email, string currentPassword, string newPassword);
         Task<IdentityResult> CreateAsync(User u);
