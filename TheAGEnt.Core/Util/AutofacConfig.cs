@@ -3,6 +3,7 @@ using System.Web.Http;
 using Autofac;
 using Autofac.Integration.WebApi;
 using Owin;
+using TheAGEnt.Core.Controllers;
 
 namespace TheAGEnt.Core.Util
 {
@@ -14,6 +15,7 @@ namespace TheAGEnt.Core.Util
             var config = new HttpConfiguration();
 
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+            builder.RegisterType<AccountController>().InstancePerRequest();
         }
     }
 }
