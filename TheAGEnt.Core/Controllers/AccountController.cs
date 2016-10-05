@@ -1,8 +1,364 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Mail;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Http;
+using Autofac;
+using Autofac.Integration.Owin;
+using FluentEmail;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.OAuth;
+using TheAGEnt.Domain.Abstract;
+using Microsoft.Owin.Host.SystemWeb;
+using TheAGEnt.Core.Models;
 
 namespace TheAGEnt.Core.Controllers
 {
+    [Authorize]
+    [RoutePrefix("api/Account")]
     public class AccountController : ApiController
     {
+        private const string LocalLoginProvider = "Local";
+        private IMainUserManager _userManager;
+
+        public AccountController()
+        {
+        }
+
+        public AccountController(IMainUserManager userManager,
+    ISecureDataFormat<AuthenticationTicket> accessTokenFormat)
+        {
+            UserManager = userManager;
+            AccessTokenFormat = accessTokenFormat;
+        }
+
+        private IMainUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? Request.GetOwinContext().GetAutofacLifetimeScope().Resolve<IMainUserManager>();
+            }
+            set { _userManager = value; }
+        }
+
+        private ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; }
+
+        // GET api/Account/UserInfo
+        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
+        [Route("UserInfo")]
+        [Authorize(Roles = "user")]
+        public AccountViewModels.UserInfoViewModel GetUserInfo()
+        {
+            var externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
+
+            return new AccountViewModels.UserInfoViewModel
+            {
+                Email = User.Identity.GetUserName(),
+                HasRegistered = externalLogin == null,
+                LoginProvider = externalLogin?.LoginProvider
+            };
+        }
+
+        // GET api/Account/AllUserInfo
+        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
+        [Route("AllUserInfo")]
+        [Authorize(Roles = "user")]
+        public async Task<PersonalUserInfoViewModer> GetAllUserInfo()
+        {
+            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            var viewUser = new PersonalUserInfoViewModer
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                NickName = user.NickName,
+                Claims = user.Claims,
+            };
+            return viewUser;
+        }
+
+
+        // GET api/Account/SearchUsers
+        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
+        [Route("SearchUsers")]
+        [HttpGet]
+        [AllowAnonymous]
+        public IQueryable SearchUsers(string searchData)
+        {
+            var users = UserManager.FindByFirstName(searchData);
+            var viewsUser = users.Select(user => new
+            {
+                user.Email,
+                user.FirstName,
+                user.LastName,
+                user.NickName
+            });
+
+            return viewsUser;
+        }
+
+        // POST api/Account/UpdateAllUserInfo
+        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
+        [Route("UpdateUserInfo")]
+        [Authorize(Roles = "user")]
+        public async Task<IHttpActionResult> UpdateUserInfo(PersonalUserInfoViewModer updatedUser)
+        {
+            if (!ModelState.IsValid) return BadRequest("Wrong model");
+            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            if (updatedUser.FirstName != "")
+                user.FirstName = updatedUser.FirstName;
+            if (updatedUser.LastName != "")
+                user.LastName = updatedUser.LastName;
+            if (updatedUser.NickName != "")
+                user.NickName = updatedUser.NickName;
+            var response = await UserManager.UpdateAsync(user);
+            return response.Succeeded
+                ? Ok(new { Msg = response.Errors, IsOk = response.Succeeded })
+                : GetErrorResult(response);
+        }
+
+        // POST api/Account/UpdateAllUserInfoByAdmin
+        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
+        [Route("UpdateUserInfoByAdmin")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IHttpActionResult> UpdateUserInfoByAdmin(PersonalUserInfoViewModer updatedUser)
+        {
+            if (!ModelState.IsValid) return BadRequest("Wrong model");
+            var user = await UserManager.FindByEmailAsync(updatedUser.Email);
+            if (updatedUser.Email != "")
+                user.Email = updatedUser.Email;
+            if (updatedUser.FirstName != "")
+                user.FirstName = updatedUser.FirstName;
+            if (updatedUser.LastName != "")
+                user.LastName = updatedUser.LastName;
+            if (updatedUser.NickName != "")
+                user.NickName = updatedUser.NickName;
+
+            var response = await UserManager.UpdateAsync(user);
+            return response.Succeeded
+                ? Ok(new { Msg = response.Errors, IsOk = response.Succeeded })
+                : GetErrorResult(response);
+        }
+
+        // POST api/Account/Logout
+        [Route("Logout")]
+        [Authorize(Roles = "user")]
+        public IHttpActionResult Logout()
+        {
+            Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
+            return Ok();
+        }
+
+
+        // GET api/Account/ManageInfo?returnUrl=%2F&generateState=true
+        [Route("ManageInfo")]
+        public async Task<AccountViewModels.ManageInfoViewModel> GetManageInfo(string returnUrl, bool generateState = false)
+        {
+            IdentityUser user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var logins = user.Logins.Select(linkedAccount => new UserLoginInfoViewModel
+            {
+                LoginProvider = linkedAccount.LoginProvider,
+                ProviderKey = linkedAccount.ProviderKey
+            }).ToList();
+
+            if (user.PasswordHash != null)
+            {
+                logins.Add(new UserLoginInfoViewModel
+                {
+                    LoginProvider = LocalLoginProvider,
+                    ProviderKey = user.UserName
+                });
+            }
+
+            return new AccountViewModels.ManageInfoViewModel
+            {
+                LocalLoginProvider = LocalLoginProvider,
+                Email = user.UserName,
+                Logins = logins,
+                ExternalLoginProviders = GetExternalLogins(returnUrl, generateState)
+            };
+        }
+
+        // POST api/Account/ChangePassword
+        [Route("ChangePassword")]
+        [HttpPost]
+        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
+        [Authorize(Roles = "user")]
+        //public async Task<IHttpActionResult> ChangePassword(ChangePasswordBindingModel model)
+        public async Task<IHttpActionResult> ChangePassword(ChangePasswordBindingModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword,
+                model.NewPassword);
+
+            return !result.Succeeded ? GetErrorResult(result) : Ok(result);
+        }
+
+        // POST api/Account/SetPassword
+        [Route("SetPassword")]
+        [AllowAnonymous]
+        public async Task<IHttpActionResult> SetPassword(SetPasswordBindingModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
+
+            return !result.Succeeded ? GetErrorResult(result) : Ok();
+        }
+
+        // GET api/Account/ExternalLogins?returnUrl=%2F&generateState=true
+        [AllowAnonymous]
+        [Route("ExternalLogins")]
+        public IEnumerable<AccountViewModels.ExternalLoginViewModel> GetExternalLogins(string returnUrl, bool generateState = false)
+        {
+            var descriptions = Authentication.GetExternalAuthenticationTypes();
+
+            string state;
+
+            if (generateState)
+            {
+                const int strengthInBits = 256;
+                state = RandomOAuthStateGenerator.Generate(strengthInBits);
+            }
+            else
+            {
+                state = null;
+            }
+
+            return descriptions.Select(description => new AccountViewModels.ExternalLoginViewModel
+            {
+                Name = description.Caption,
+                Url = Url.Route("ExternalLogin", new
+                {
+                    provider = description.AuthenticationType,
+                    response_type = "token",
+                    client_id = Startup.PublicClientId,
+                    redirect_uri = new Uri(Request.RequestUri, returnUrl).AbsoluteUri,
+                    state
+                }),
+                State = state
+            }).ToList();
+        }
+
+
+
+        #region Helpers
+
+        private IAuthenticationManager Authentication => Request.GetOwinContext().Authentication;
+
+        private IHttpActionResult GetErrorResult(IdentityResult result)
+        {
+            if (result == null)
+            {
+                return InternalServerError();
+            }
+
+            if (!result.Succeeded)
+            {
+                if (result.Errors != null)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error);
+                    }
+                }
+
+                if (ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
+
+                return BadRequest(ModelState);
+            }
+
+            return null;
+        }
+
+        private class ExternalLoginData
+        {
+            public string LoginProvider { get; private set; }
+            public string ProviderKey { get; private set; }
+            public string UserName { get; set; }
+
+            public IEnumerable<Claim> GetClaims()
+            {
+                IList<Claim> claims = new List<Claim>();
+                claims.Add(new Claim(ClaimTypes.NameIdentifier, ProviderKey, null, LoginProvider));
+
+                if (UserName != null)
+                {
+                    claims.Add(new Claim(ClaimTypes.Name, UserName, null, LoginProvider));
+                }
+
+                return claims;
+            }
+
+            public static ExternalLoginData FromIdentity(ClaimsIdentity identity)
+            {
+                var providerKeyClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
+
+                if (string.IsNullOrEmpty(providerKeyClaim?.Issuer) || string.IsNullOrEmpty(providerKeyClaim.Value))
+                {
+                    return null;
+                }
+
+                if (providerKeyClaim.Issuer == ClaimsIdentity.DefaultIssuer)
+                {
+                    return null;
+                }
+
+                return new ExternalLoginData
+                {
+                    LoginProvider = providerKeyClaim.Issuer,
+                    ProviderKey = providerKeyClaim.Value,
+                    UserName = identity.FindFirstValue(ClaimTypes.Name)
+                };
+            }
+        }
+
+        private static class RandomOAuthStateGenerator
+        {
+            private static readonly RandomNumberGenerator Random = new RNGCryptoServiceProvider();
+
+            public static string Generate(int strengthInBits)
+            {
+                const int bitsPerByte = 8;
+
+                if (strengthInBits % bitsPerByte != 0)
+                {
+                    throw new ArgumentException("strengthInBits must be evenly divisible by 8.", nameof(strengthInBits));
+                }
+
+                var strengthInBytes = strengthInBits / bitsPerByte;
+
+                var data = new byte[strengthInBytes];
+                Random.GetBytes(data);
+                return HttpServerUtility.UrlTokenEncode(data);
+            }
+        }
+
+        #endregion
     }
 }
