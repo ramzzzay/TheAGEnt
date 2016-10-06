@@ -58,6 +58,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\IMainUserManager.cs" />
+    <Compile Include="Entities\Album.cs" />
+    <Compile Include="Entities\Comment.cs" />
+    <Compile Include="Entities\Picture.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
