@@ -89,12 +89,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Concrete\TheAGEntContext.cs" />
     <Compile Include="Infrastructure\ApplicationUserManager.cs" />
     <Compile Include="Infrastructure\MainUserManager.cs" />
+    <Compile Include="Migrations\201610060737440_init.cs" />
+    <Compile Include="Migrations\201610060737440_init.Designer.cs">
+      <DependentUpon>201610060737440_init.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Concrete\" />
+    <EmbeddedResource Include="Migrations\201610060737440_init.resx">
+      <DependentUpon>201610060737440_init.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TheAGEnt.Domain\TheAGEnt.Domain.csproj">
