@@ -2,6 +2,7 @@
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
+using TheAGEnt.Core.Util;
 
 namespace TheAGEnt.Core
 {
@@ -13,6 +14,8 @@ namespace TheAGEnt.Core
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+
+            AutofacConfig.Configure();
         }
     }
 }
