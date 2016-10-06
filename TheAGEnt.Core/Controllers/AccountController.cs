@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -17,10 +16,9 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
-using Microsoft.Owin.Security.OAuth;
-using TheAGEnt.Domain.Abstract;
-using Microsoft.Owin.Host.SystemWeb;
 using TheAGEnt.Core.Models;
+using TheAGEnt.Domain.Abstract;
+using TheAGEnt.Domain.Entities;
 
 namespace TheAGEnt.Core.Controllers
 {
@@ -36,7 +34,7 @@ namespace TheAGEnt.Core.Controllers
         }
 
         public AccountController(IMainUserManager userManager,
-    ISecureDataFormat<AuthenticationTicket> accessTokenFormat)
+            ISecureDataFormat<AuthenticationTicket> accessTokenFormat)
         {
             UserManager = userManager;
             AccessTokenFormat = accessTokenFormat;
@@ -81,7 +79,7 @@ namespace TheAGEnt.Core.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 NickName = user.NickName,
-                Claims = user.Claims,
+                Claims = user.Claims
             };
             return viewUser;
         }
@@ -122,14 +120,14 @@ namespace TheAGEnt.Core.Controllers
                 user.NickName = updatedUser.NickName;
             var response = await UserManager.UpdateAsync(user);
             return response.Succeeded
-                ? Ok(new { Msg = response.Errors, IsOk = response.Succeeded })
+                ? Ok(new {Msg = response.Errors, IsOk = response.Succeeded})
                 : GetErrorResult(response);
         }
 
         // POST api/Account/UpdateAllUserInfoByAdmin
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
         [Route("UpdateUserInfoByAdmin")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IHttpActionResult> UpdateUserInfoByAdmin(PersonalUserInfoViewModer updatedUser)
         {
             if (!ModelState.IsValid) return BadRequest("Wrong model");
@@ -145,7 +143,7 @@ namespace TheAGEnt.Core.Controllers
 
             var response = await UserManager.UpdateAsync(user);
             return response.Succeeded
-                ? Ok(new { Msg = response.Errors, IsOk = response.Succeeded })
+                ? Ok(new {Msg = response.Errors, IsOk = response.Succeeded})
                 : GetErrorResult(response);
         }
 
@@ -161,14 +159,13 @@ namespace TheAGEnt.Core.Controllers
 
         // GET api/Account/ManageInfo?returnUrl=%2F&generateState=true
         [Route("ManageInfo")]
-        public async Task<AccountViewModels.ManageInfoViewModel> GetManageInfo(string returnUrl, bool generateState = false)
+        public async Task<AccountViewModels.ManageInfoViewModel> GetManageInfo(string returnUrl,
+            bool generateState = false)
         {
             IdentityUser user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
 
             if (user == null)
-            {
                 return null;
-            }
 
             var logins = user.Logins.Select(linkedAccount => new UserLoginInfoViewModel
             {
@@ -177,13 +174,11 @@ namespace TheAGEnt.Core.Controllers
             }).ToList();
 
             if (user.PasswordHash != null)
-            {
                 logins.Add(new UserLoginInfoViewModel
                 {
                     LoginProvider = LocalLoginProvider,
                     ProviderKey = user.UserName
                 });
-            }
 
             return new AccountViewModels.ManageInfoViewModel
             {
@@ -203,9 +198,7 @@ namespace TheAGEnt.Core.Controllers
         public async Task<IHttpActionResult> ChangePassword(ChangePasswordBindingModel model)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword,
                 model.NewPassword);
@@ -219,19 +212,81 @@ namespace TheAGEnt.Core.Controllers
         public async Task<IHttpActionResult> SetPassword(SetPasswordBindingModel model)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             var result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
 
             return !result.Succeeded ? GetErrorResult(result) : Ok();
         }
 
+        // POST api/Account/AddClaim
+        [Route("AddClaim")]
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public async Task<IHttpActionResult> AddClaim(ClaimAddModel c)
+        {
+            if (!ModelState.IsValid) return BadRequest("Something frong with adding claim to user!");
+            var response = await UserManager.AddClaimToUserAsync(c.Email, c.NameOfClaim);
+            return Ok(new {Msg = response.Errors, IsOk = response.Succeeded});
+        }
+
+        // POST api/Account/Register
+        [AllowAnonymous]
+        [Route("Register")]
+        public async Task<IHttpActionResult> Register(RegisterBindingModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = new User
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                EmailConfirmed = false,
+                Password = model.Password
+            };
+
+            var result = await UserManager.CreateAsync(user);
+
+            //if (!result.Succeeded) return GetErrorResult(result);
+            //var client = new SmtpClient("smtp.gmail.com", 587)
+            //{
+            //    EnableSsl = true,
+            //    Timeout = 10000,
+            //    DeliveryMethod = SmtpDeliveryMethod.Network,
+            //    UseDefaultCredentials = false,
+            //    Credentials = new NetworkCredential("phonebooksender@gmail.com", "Qw12345678*")
+            //};
+
+            //var email = Email
+            //    .From("phonebooksender@gmail.com")
+            //    .To(user.Email)
+            //    .Subject("Email confirmation")
+            //    .Body(string.Format("For complete the registration, please go to link:" +
+            //                        "<a href=\"{0}\" title=\"Accept\">{0}</a>",
+            //        $"http://localhost/api/Account/ConfirmEmail?token={user.Email}"))
+            //    .UsingClient(client);
+            //email.Send();
+
+            return Ok(new { Msg = result.Errors, IsOk = result.Succeeded });
+        }
+
+        [AllowAnonymous]
+        [Route("ConfirmEmail")]
+        public async Task<IHttpActionResult> ConfirmEmail(string token)
+        {
+            var user = await UserManager.FindByEmailAsync(token);
+            if (user == null) return BadRequest("Bad Token");
+            user.EmailConfirmed = true;
+            await UserManager.UpdateAsync(user);
+            return Ok();
+        }
+
         // GET api/Account/ExternalLogins?returnUrl=%2F&generateState=true
         [AllowAnonymous]
         [Route("ExternalLogins")]
-        public IEnumerable<AccountViewModels.ExternalLoginViewModel> GetExternalLogins(string returnUrl, bool generateState = false)
+        public IEnumerable<AccountViewModels.ExternalLoginViewModel> GetExternalLogins(string returnUrl,
+            bool generateState = false)
         {
             var descriptions = Authentication.GetExternalAuthenticationTypes();
 
@@ -262,8 +317,6 @@ namespace TheAGEnt.Core.Controllers
             }).ToList();
         }
 
-
-
         #region Helpers
 
         private IAuthenticationManager Authentication => Request.GetOwinContext().Authentication;
@@ -271,24 +324,16 @@ namespace TheAGEnt.Core.Controllers
         private IHttpActionResult GetErrorResult(IdentityResult result)
         {
             if (result == null)
-            {
                 return InternalServerError();
-            }
 
             if (!result.Succeeded)
             {
                 if (result.Errors != null)
-                {
                     foreach (var error in result.Errors)
-                    {
                         ModelState.AddModelError("", error);
-                    }
-                }
 
                 if (ModelState.IsValid)
-                {
                     return BadRequest();
-                }
 
                 return BadRequest(ModelState);
             }
@@ -308,9 +353,7 @@ namespace TheAGEnt.Core.Controllers
                 claims.Add(new Claim(ClaimTypes.NameIdentifier, ProviderKey, null, LoginProvider));
 
                 if (UserName != null)
-                {
                     claims.Add(new Claim(ClaimTypes.Name, UserName, null, LoginProvider));
-                }
 
                 return claims;
             }
@@ -320,14 +363,10 @@ namespace TheAGEnt.Core.Controllers
                 var providerKeyClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
 
                 if (string.IsNullOrEmpty(providerKeyClaim?.Issuer) || string.IsNullOrEmpty(providerKeyClaim.Value))
-                {
                     return null;
-                }
 
                 if (providerKeyClaim.Issuer == ClaimsIdentity.DefaultIssuer)
-                {
                     return null;
-                }
 
                 return new ExternalLoginData
                 {
@@ -346,12 +385,10 @@ namespace TheAGEnt.Core.Controllers
             {
                 const int bitsPerByte = 8;
 
-                if (strengthInBits % bitsPerByte != 0)
-                {
+                if (strengthInBits%bitsPerByte != 0)
                     throw new ArgumentException("strengthInBits must be evenly divisible by 8.", nameof(strengthInBits));
-                }
 
-                var strengthInBytes = strengthInBits / bitsPerByte;
+                var strengthInBytes = strengthInBits/bitsPerByte;
 
                 var data = new byte[strengthInBytes];
                 Random.GetBytes(data);
