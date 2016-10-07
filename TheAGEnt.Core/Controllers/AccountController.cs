@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Net.Mail;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -11,7 +9,6 @@ using System.Web;
 using System.Web.Http;
 using Autofac;
 using Autofac.Integration.Owin;
-using FluentEmail;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
@@ -76,8 +73,8 @@ namespace TheAGEnt.Core.Controllers
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
             var viewUser = new PersonalUserInfoViewModer
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
+                Name = user.Name,
+                Surname = user.Surname,
                 NickName = user.NickName,
                 Claims = user.Claims
             };
@@ -92,12 +89,12 @@ namespace TheAGEnt.Core.Controllers
         [AllowAnonymous]
         public IQueryable SearchUsers(string searchData)
         {
-            var users = UserManager.FindByFirstName(searchData);
+            var users = UserManager.FindByName(searchData);
             var viewsUser = users.Select(user => new
             {
                 user.Email,
-                user.FirstName,
-                user.LastName,
+                user.Name,
+                user.Surname,
                 user.NickName
             });
 
@@ -112,10 +109,10 @@ namespace TheAGEnt.Core.Controllers
         {
             if (!ModelState.IsValid) return BadRequest("Wrong model");
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-            if (updatedUser.FirstName != "")
-                user.FirstName = updatedUser.FirstName;
-            if (updatedUser.LastName != "")
-                user.LastName = updatedUser.LastName;
+            if (updatedUser.Name != "")
+                user.Name = updatedUser.Name;
+            if (updatedUser.Surname != "")
+                user.Surname = updatedUser.Surname;
             if (updatedUser.NickName != "")
                 user.NickName = updatedUser.NickName;
             var response = await UserManager.UpdateAsync(user);
@@ -134,10 +131,10 @@ namespace TheAGEnt.Core.Controllers
             var user = await UserManager.FindByEmailAsync(updatedUser.Email);
             if (updatedUser.Email != "")
                 user.Email = updatedUser.Email;
-            if (updatedUser.FirstName != "")
-                user.FirstName = updatedUser.FirstName;
-            if (updatedUser.LastName != "")
-                user.LastName = updatedUser.LastName;
+            if (updatedUser.Name != "")
+                user.Name = updatedUser.Name;
+            if (updatedUser.Surname != "")
+                user.Surname = updatedUser.Surname;
             if (updatedUser.NickName != "")
                 user.NickName = updatedUser.NickName;
 
@@ -241,6 +238,10 @@ namespace TheAGEnt.Core.Controllers
             var user = new User
             {
                 UserName = model.Email,
+                Name = model.Name,
+                Surname = model.Surname,
+                Adress = model.Adress,
+                NickName = model.NickName,
                 Email = model.Email,
                 EmailConfirmed = false,
                 Password = model.Password
@@ -268,7 +269,7 @@ namespace TheAGEnt.Core.Controllers
             //    .UsingClient(client);
             //email.Send();
 
-            return Ok(new { Msg = result.Errors, IsOk = result.Succeeded });
+            return Ok(new {Msg = result.Errors, IsOk = result.Succeeded});
         }
 
         [AllowAnonymous]

@@ -29,8 +29,8 @@ namespace TheAGEnt.Infrastructure.Infrastructure
                 EmailConfirmed = u.EmailConfirmed,
                 UserName = u.Email,
                 NickName = u.NickName,
-                FirstName = u.FirstName,
-                LastName = u.LastName
+                Name = u.Name,
+                Surname = u.Surname
             };
             var result = await _applicationUserManager.CreateAsync(user, u.Password);
             if (!result.Succeeded) return result;
@@ -57,9 +57,9 @@ namespace TheAGEnt.Infrastructure.Infrastructure
             return await _applicationUserManager.FindAsync(userLoginInfo);
         }
 
-        public IQueryable<User> FindByFirstName(string firstName)
+        public IQueryable<User> FindByName(string Name)
         {
-            return _applicationUserManager.Users.Where(u => u.FirstName.Contains(firstName)).Select(u => u);
+            return _applicationUserManager.Users.Where(u => u.Name.Contains(Name)).Select(u => u);
         }
 
         public async Task<ClaimsIdentity> CreateIdentityAsync(User user, string authenticationType)

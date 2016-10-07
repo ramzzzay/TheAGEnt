@@ -100,6 +100,10 @@
     <Compile Include="Migrations\201610061045534_newEntity.Designer.cs">
       <DependentUpon>201610061045534_newEntity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610071004100_updateUserModer.cs" />
+    <Compile Include="Migrations\201610071004100_updateUserModer.Designer.cs">
+      <DependentUpon>201610071004100_updateUserModer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -109,6 +113,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610061045534_newEntity.resx">
       <DependentUpon>201610061045534_newEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610071004100_updateUserModer.resx">
+      <DependentUpon>201610071004100_updateUserModer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

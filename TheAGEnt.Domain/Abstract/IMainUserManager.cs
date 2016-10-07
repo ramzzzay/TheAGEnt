@@ -23,6 +23,6 @@ namespace TheAGEnt.Domain.Abstract
         Task<IdentityResult> RemoveLoginAsync(string userId, UserLoginInfo userInfo);
         Task<User> FindAsync(UserLoginInfo userLoginInfo);
         Task<IdentityResult> UpdateAsync(User u);
-        IQueryable<User> FindByFirstName(string firstName);
+        IQueryable<User> FindByName(string Name);
     }
 }

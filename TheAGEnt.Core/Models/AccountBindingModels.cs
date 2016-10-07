@@ -36,7 +36,28 @@ public class AddExternalLoginBindingModel
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 8)]
+        [Display(Name = "Name")]
+        [DataType(DataType.Text)]
+        public string Name { get; set; }
+
+
+        [Required]
+        [Display(Name = "Surname")]
+        [DataType(DataType.Text)]
+        public string Surname { get; set; }
+
+        [Required]
+        [Display(Name = "NickName")]
+        [DataType(DataType.Text)]
+        public string NickName { get; set; }
+
+        [Required]
+        [Display(Name = "Adress")]
+        [DataType(DataType.Text)]
+        public string Adress { get; set; }
+
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
