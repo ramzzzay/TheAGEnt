@@ -30,7 +30,8 @@ namespace TheAGEnt.Infrastructure.Infrastructure
                 UserName = u.Email,
                 NickName = u.NickName,
                 Name = u.Name,
-                Surname = u.Surname
+                Surname = u.Surname,
+                Address = u.Address
             };
             var result = await _applicationUserManager.CreateAsync(user, u.Password);
             if (!result.Succeeded) return result;

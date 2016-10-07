@@ -115,6 +115,8 @@ namespace TheAGEnt.Core.Controllers
                 user.Surname = updatedUser.Surname;
             if (updatedUser.NickName != "")
                 user.NickName = updatedUser.NickName;
+            if (updatedUser.PathToPhoto != "")
+                user.PathToPhoto = updatedUser.PathToPhoto;
             var response = await UserManager.UpdateAsync(user);
             return response.Succeeded
                 ? Ok(new {Msg = response.Errors, IsOk = response.Succeeded})
@@ -240,7 +242,7 @@ namespace TheAGEnt.Core.Controllers
                 UserName = model.Email,
                 Name = model.Name,
                 Surname = model.Surname,
-                Adress = model.Adress,
+                Address = model.Address,
                 NickName = model.NickName,
                 Email = model.Email,
                 EmailConfirmed = false,

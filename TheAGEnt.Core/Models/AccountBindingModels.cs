@@ -54,7 +54,7 @@ public class AddExternalLoginBindingModel
         [Required]
         [Display(Name = "Adress")]
         [DataType(DataType.Text)]
-        public string Adress { get; set; }
+        public string Address { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]

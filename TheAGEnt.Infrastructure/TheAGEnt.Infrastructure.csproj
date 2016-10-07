@@ -104,6 +104,10 @@
     <Compile Include="Migrations\201610071004100_updateUserModer.Designer.cs">
       <DependentUpon>201610071004100_updateUserModer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610071351268_updateUserModel.cs" />
+    <Compile Include="Migrations\201610071351268_updateUserModel.Designer.cs">
+      <DependentUpon>201610071351268_updateUserModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -116,6 +120,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610071004100_updateUserModer.resx">
       <DependentUpon>201610071004100_updateUserModer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610071351268_updateUserModel.resx">
+      <DependentUpon>201610071351268_updateUserModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
