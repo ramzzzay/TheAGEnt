@@ -30,3 +30,4 @@ _ReSharper*/
 node_modules/
 packages/
 *.map
+bundle.*
