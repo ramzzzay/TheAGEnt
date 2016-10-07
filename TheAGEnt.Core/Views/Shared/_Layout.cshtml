@@ -1,8 +1,13 @@
-﻿<html xmlns="http://www.w3.org/1999/xhtml">
+﻿<html>
 <head>
-    <title></title>
+    <title>Gallery</title>
+    <link href="~/Assets/bundle.css" rel="stylesheet" />
 </head>
 <body>
 @RenderBody()
+<div>
+    <script async src="~/Assets/bundle.js"></script>
+    @RenderSection("scripts", false)
+</div>
 </body>
 </html>
