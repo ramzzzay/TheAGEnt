@@ -5,6 +5,7 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
 using TheAGEnt.Core.Util;
+using Swashbuckle.Application;
 
 [assembly: OwinStartup(typeof(TheAGEnt.Core.Startup))]
 
@@ -27,12 +28,11 @@ namespace TheAGEnt.Core
                 {
                     TokenEndpointPath = new PathString("/Token"),
                     Provider = new ApplicationOAuthProvider(PublicClientId),
-                    AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
+                    //AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
                     AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
                     // In production mode set AllowInsecureHttp = false
                     AllowInsecureHttp = true
                 });
-
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalBearer);
         }
     }
