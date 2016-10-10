@@ -42,7 +42,6 @@ const Login_Form = React.createClass({
             headers: new Headers({'Accept': 'application/json, application/xml, text/plain, text/html, *.*', 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}),
             body: `grant_type=password&username=${this.state.email}&password=${this.state.password}`
         }).then(r => r.json()).then(data => {
-            console.log("Info from token", data);
             Cookie.save('userName', data.userName);
             Cookie.save('tokenInfo', data.access_token);
             this.getClaims();
@@ -60,7 +59,6 @@ const Login_Form = React.createClass({
             })
         }).then(r => r.json()).then(data => {
             var strOfCookies = data.Claims.reduce((x, y) => x + ";" + y.ClaimValue, "");
-            console.log("Claims are: ", strOfCookies);
             Cookie.save('claims', strOfCookies);
         });
     },
@@ -107,7 +105,6 @@ module.exports = React.createClass({
     },
     updateAuthState: function(flag, userName) {
         this.setState({logged: flag, LoggedUserName: userName});
-        console.log("User status updated! ", flag, userName);
     },
     handleLogOut: function() {
         Cookie.save('userName', "");
@@ -150,7 +147,7 @@ module.exports = React.createClass({
                             vertical: 'top'
                         }} onRequestClose={this.handleRequestClose} animation={PopoverAnimationVertical}>
                             <Menu>
-                                <MenuItem primaryText="Settings"/>
+                                <MenuItem><Link to='/Settings'>Settings</Link></MenuItem>
                                 <MenuItem primaryText="Log out" onTouchTap={this.handleLogOut}/>
                             </Menu>
                         </Popover>
