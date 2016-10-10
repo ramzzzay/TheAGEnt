@@ -194,7 +194,8 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Assets\content\" />
-    <Folder Include="Assets\imgs\" />
+    <Folder Include="Assets\imgs\ProfileImages\Avatars\" />
+    <Folder Include="Assets\imgs\ProfileImages\Cards\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -252,7 +253,10 @@
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Assets\css\site.css" />
     <Content Include="Assets\js\components\AdminPanel.jsx" />
+    <Content Include="Assets\js\components\ImageUpload.jsx" />
     <Content Include="Assets\js\components\Registration.jsx" />
+    <Content Include="Assets\js\components\SettingsPage.jsx" />
+    <Content Include="Assets\js\components\UpdateUserInfo.jsx" />
     <Content Include="Assets\js\containers\App.jsx" />
     <Content Include="Assets\js\index.jsx" />
     <Content Include="favicon.ico" />
