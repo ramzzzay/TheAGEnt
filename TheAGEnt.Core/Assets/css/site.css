@@ -1,6 +1,4 @@
-body {}
-
-.Registration {
+.Registration, .Login {
     display: flex;
     justify-content: center;
     flex-direction: column;

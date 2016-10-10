@@ -19,22 +19,27 @@ import {Popover, PopoverAnimationVertical} from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 
 import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
 
-
-// TODO: Why this not work? I must fix that!
-let loginForm = React.createClass({
+const Login_Form = React.createClass({
     getInitialState: function() {
         return {email: "", password: ""};
     },
     _emailFieldChange: function(e) {
         this.setState({email: e.target.value});
     },
-    render: function(){
-      return (
-        <div ref="loginForm">
-            <TextField value={this.state.email} onChange={this._emailFieldChange} hintText="Email" floatingLabelText="Enter please You email here" type="email"/><br/>
-        </div>
-      );
+    _passwordFieldChange: function(e) {
+        this.setState({password: e.target.value});
+    },
+    render: function() {
+        return (
+          <Dialog title={this.props.title} actions={this.props.actions} modal={this.props.modal} open={this.props.open} onRequestClose={this.props.onRequestClose}>
+            <div ref="loginForm" className="Login">
+                <TextField value={this.state.email} onChange={this._emailFieldChange} hintText="Email" floatingLabelText="Enter please You email here" type="email"/><br/>
+                <TextField value={this.state.password} onChange={this._passwordFieldChange} hintText="Password" floatingLabelText="Enter please You password here" type="password"/><br/>
+            </div>
+          </Dialog>
+        );
     }
 });
 
@@ -104,9 +109,7 @@ module.exports = React.createClass({
                             </Menu>
                         </Popover>
                     </AppBar>
-                    <Dialog title="Dialog With Actions" actions={actions} modal={false} open={this.state.openLoginWindow} onRequestClose={this.handleCloseLoginWindow}>
-                        <loginForm/>
-                    </Dialog>
+                    <Login_Form title="Here You'll enter to the amazing world of art!" actions={actions} modal={false} open={this.state.openLoginWindow} onRequestClose={this.handleCloseLoginWindow}/>
                     <Drawer docked={false} width={200} open={this.state.open} onRequestChange={(open) => this.setState({open})}>
                         <MenuItem href="/" onTouchTap={this.handleClose}>Home</MenuItem>
                         <MenuItem href="/AdminPanel" onTouchTap={this.handleClose}>Admin Panel</MenuItem>
