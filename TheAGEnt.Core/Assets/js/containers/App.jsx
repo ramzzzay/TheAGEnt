@@ -20,6 +20,7 @@ import Menu from 'material-ui/Menu';
 
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
 
 const Login_Form = React.createClass({
     getInitialState: function() {
@@ -31,21 +32,54 @@ const Login_Form = React.createClass({
     _passwordFieldChange: function(e) {
         this.setState({password: e.target.value});
     },
+    clearForm: function() {
+        this.setState({email: "", password: ""});
+    },
+    sendToServer: function() {
+        fetch('/token', {
+            credentials: 'include',
+            method: 'POST',
+            headers: new Headers({'Accept': 'application/json, application/xml, text/plain, text/html, *.*', 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}),
+            body: `grant_type=password&username=${this.state.email}&password=${this.state.password}`
+        }).then(r => r.json()).then(data => {
+            console.log("Info from token", data);
+            Cookie.save('userName', data.userName);
+            Cookie.save('tokenInfo', data.access_token);
+            this.getClaims();
+            this.props.updateAuthState(true, data.userName);
+            this.props.onRequestClose();
+            this.clearForm();
+        });
+    },
+    getClaims: function() {
+        fetch('api/Account/AllUserInfo', {
+            method: 'GET',
+            headers: new Headers({
+                "Content-Type": "application/json",
+                "Authorization": "bearer " + Cookie.load('tokenInfo')
+            })
+        }).then(r => r.json()).then(data => {
+            var strOfCookies = data.Claims.reduce((x, y) => x + ";" + y.ClaimValue, "");
+            console.log("Claims are: ", strOfCookies);
+            Cookie.save('claims', strOfCookies);
+        });
+    },
     render: function() {
         return (
-          <Dialog title={this.props.title} actions={this.props.actions} modal={this.props.modal} open={this.props.open} onRequestClose={this.props.onRequestClose}>
-            <div ref="loginForm" className="Login">
-                <TextField value={this.state.email} onChange={this._emailFieldChange} hintText="Email" floatingLabelText="Enter please You email here" type="email"/><br/>
-                <TextField value={this.state.password} onChange={this._passwordFieldChange} hintText="Password" floatingLabelText="Enter please You password here" type="password"/><br/>
-            </div>
-          </Dialog>
+            <Dialog title={this.props.title} modal={this.props.modal} open={this.props.open} onRequestClose={this.props.onRequestClose}>
+                <div ref="loginForm" className="Login">
+                    <TextField name="email" value={this.state.email} onChange={this._emailFieldChange} hintText="Email" floatingLabelText="Enter please You email here" type="email"/><br/>
+                    <TextField name="password" value={this.state.password} onChange={this._passwordFieldChange} hintText="Password" floatingLabelText="Enter please You password here" type="password"/><br/>
+                    <RaisedButton label="Ok, let's start!" primary={true} onClick={this.sendToServer}/>
+                </div>
+            </Dialog>
         );
     }
 });
 
 module.exports = React.createClass({
     getInitialState: function() {
-        return {open: false, openUserMenu: false, openLoginWindow: false};
+        return {open: false, openUserMenu: false, openLoginWindow: false, LoggedUserName: Cookie.load('userName'), logged: false};
     },
     handleToggle: function() {
         this.setState({
@@ -71,30 +105,43 @@ module.exports = React.createClass({
     handleCloseLoginWindow: function() {
         this.setState({openLoginWindow: false});
     },
+    updateAuthState: function(flag, userName) {
+        this.setState({logged: flag, LoggedUserName: userName});
+        console.log("User status updated! ", flag, userName);
+    },
+    handleLogOut: function() {
+        Cookie.save('userName', "");
+        Cookie.save('tokenKey', "");
+        Cookie.save('claims', "");
+        this.updateAuthState(false, "");
+    },
+    componentDidMount: function() {
+        if (typeof this.state.LoggedUserName !== "undefined" && this.state.LoggedUserName !== "") {
+            this.setState({logged: true});
+        } else {
+            this.setState({logged: false});
+        }
+    },
+    componentDidUpdate: function(prevProps, prevState) {
+        if (prevState.logged !== this.state.logged) {
+            if (typeof this.state.LoggedUserName !== "undefined" && this.state.LoggedUserName !== "") {
+                this.setState({logged: true});
+            } else {
+                this.setState({logged: false});
+            }
+        }
+    },
     render: function() {
-        var actions = [ < FlatButton label = "Cancel" primary = {
-                true
-            }
-            onTouchTap = {
-                this.handleCloseLoginWindow
-            } />, < FlatButton label = "Submit" primary = {
-                true
-            }
-            keyboardFocused = {
-                true
-            }
-            onTouchTap = {
-                this.handleCloseLoginWindow
-            } />
-        ];
         return (
             <MuiThemeProvider>
                 <div className='container'>
-                    <AppBar title="AG - You personal art place!" iconClassNameRight="muidocs-icon-navigation-expand-more" onLeftIconButtonTouchTap={this.handleToggle} iconElementRight={< FlatButton icon = { < MoreVertIcon />
-                    }
-                    onTouchTap = {
-                        this.handleTouchTap
-                    } />}>
+                    <AppBar title="AG - You personal art place!" iconClassNameRight="muidocs-icon-navigation-expand-more" onLeftIconButtonTouchTap={this.handleToggle} iconElementRight={this.state.logged
+                        ? < FlatButton icon = { < MoreVertIcon />
+                        }
+                        onTouchTap = {
+                            this.handleTouchTap
+                        } />
+                        : <FlatButton onTouchTap={this.handleOpenLoginWindow} label="Log in" primary={true}/>}>
                         <Popover open={this.state.openUserMenu} anchorEl={this.state.anchorEl} anchorOrigin={{
                             horizontal: 'left',
                             vertical: 'bottom'
@@ -103,13 +150,12 @@ module.exports = React.createClass({
                             vertical: 'top'
                         }} onRequestClose={this.handleRequestClose} animation={PopoverAnimationVertical}>
                             <Menu>
-                                <MenuItem onTouchTap={this.handleOpenLoginWindow} primaryText="Log in"/>
                                 <MenuItem primaryText="Settings"/>
-                                <MenuItem primaryText="Sign out"/>
+                                <MenuItem primaryText="Log out" onTouchTap={this.handleLogOut}/>
                             </Menu>
                         </Popover>
                     </AppBar>
-                    <Login_Form title="Here You'll enter to the amazing world of art!" actions={actions} modal={false} open={this.state.openLoginWindow} onRequestClose={this.handleCloseLoginWindow}/>
+                    <Login_Form title="Here You'll enter to the amazing world of art!" modal={false} open={this.state.openLoginWindow} onRequestClose={this.handleCloseLoginWindow} updateAuthState={this.updateAuthState}/>
                     <Drawer docked={false} width={200} open={this.state.open} onRequestChange={(open) => this.setState({open})}>
                         <MenuItem href="/" onTouchTap={this.handleClose}>Home</MenuItem>
                         <MenuItem href="/AdminPanel" onTouchTap={this.handleClose}>Admin Panel</MenuItem>
