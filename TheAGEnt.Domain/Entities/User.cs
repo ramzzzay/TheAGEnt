@@ -20,6 +20,7 @@ namespace TheAGEnt.Domain.Entities
         public string NickName { get; set; }
         public string Address { get; set; }
         public string PathToPhoto { get; set; }
+        public string PathToCard { get; set; }
         public virtual ICollection<Album> Albums { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
 

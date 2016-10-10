@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
@@ -14,6 +15,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using TheAGEnt.Core.Models;
+using TheAGEnt.Core.Util;
 using TheAGEnt.Domain.Abstract;
 using TheAGEnt.Domain.Entities;
 
@@ -73,10 +75,13 @@ namespace TheAGEnt.Core.Controllers
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
             var viewUser = new PersonalUserInfoViewModer
             {
+                Email = user.Email,
                 Name = user.Name,
                 Surname = user.Surname,
                 NickName = user.NickName,
-                Claims = user.Claims
+                Claims = user.Claims,
+                PathToPhoto = user.PathToPhoto,
+                PathToCard = user.PathToCard
             };
             return viewUser;
         }
@@ -115,8 +120,8 @@ namespace TheAGEnt.Core.Controllers
                 user.Surname = updatedUser.Surname;
             if (updatedUser.NickName != "")
                 user.NickName = updatedUser.NickName;
-            if (updatedUser.PathToPhoto != "")
-                user.PathToPhoto = updatedUser.PathToPhoto;
+            if (updatedUser.Address != "")
+                user.Address = updatedUser.Address;
             var response = await UserManager.UpdateAsync(user);
             return response.Succeeded
                 ? Ok(new {Msg = response.Errors, IsOk = response.Succeeded})
@@ -139,10 +144,66 @@ namespace TheAGEnt.Core.Controllers
                 user.Surname = updatedUser.Surname;
             if (updatedUser.NickName != "")
                 user.NickName = updatedUser.NickName;
-
+            if (updatedUser.Address != "")
+                user.Address = updatedUser.Address;
             var response = await UserManager.UpdateAsync(user);
             return response.Succeeded
                 ? Ok(new {Msg = response.Errors, IsOk = response.Succeeded})
+                : GetErrorResult(response);
+        }
+
+
+        [Route("UploadUserAvatar")]
+        // POST api/Account/UploadUserAvatar
+        [MimeMultipart]
+        [Authorize(Roles = "user")]
+        public async Task<IHttpActionResult> UploadUserAvatar()
+        {
+            var uploadPath = HttpContext.Current.Server.MapPath("~/Assets/imgs/ProfileImages/Avatars");
+
+            var multipartFormDataStreamProvider = new UploadMultipartFormProvider(uploadPath);
+
+            // Read the MIME multipart asynchronously 
+            await Request.Content.ReadAsMultipartAsync(multipartFormDataStreamProvider);
+
+            var localFileName = multipartFormDataStreamProvider
+                .FileData.Select(multiPartData => multiPartData.LocalFileName).FirstOrDefault();
+            var fileName = Path.GetFileName(localFileName);
+
+            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+
+            user.PathToPhoto = $"/Assets/imgs/ProfileImages/Avatars/{fileName}";
+
+            var response = await UserManager.UpdateAsync(user);
+            return response.Succeeded
+                ? Ok(new { Msg = response.Errors, IsOk = response.Succeeded, uploadedUrl = user.PathToPhoto })
+                : GetErrorResult(response);
+        }
+
+        [Route("UploadUserCard")]
+        // POST api/Account/UploadUserCard
+        [MimeMultipart]
+        [Authorize(Roles = "user")]
+        public async Task<IHttpActionResult> UploadUserCard()
+        {
+            var uploadPath = HttpContext.Current.Server.MapPath("~/Assets/imgs/ProfileImages/Cards");
+
+            var multipartFormDataStreamProvider = new UploadMultipartFormProvider(uploadPath);
+
+            // Read the MIME multipart asynchronously 
+            await Request.Content.ReadAsMultipartAsync(multipartFormDataStreamProvider);
+
+            var localFileName = multipartFormDataStreamProvider
+                .FileData.Select(multiPartData => multiPartData.LocalFileName).FirstOrDefault();
+            var fileName = Path.GetFileName(localFileName);
+
+            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+
+            user.PathToCard = $"/Assets/imgs/ProfileImages/Cards/{fileName}";
+
+            var response = await UserManager.UpdateAsync(user);
+            return response.Succeeded
+                ? Ok(new { Msg = response.Errors, IsOk = response.Succeeded, uploadedUrl = user.PathToPhoto })
                 : GetErrorResult(response);
         }
 

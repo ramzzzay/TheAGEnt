@@ -108,6 +108,10 @@
     <Compile Include="Migrations\201610071351268_updateUserModel.Designer.cs">
       <DependentUpon>201610071351268_updateUserModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610101047061_Add card to user.cs" />
+    <Compile Include="Migrations\201610101047061_Add card to user.Designer.cs">
+      <DependentUpon>201610101047061_Add card to user.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -123,6 +127,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610071351268_updateUserModel.resx">
       <DependentUpon>201610071351268_updateUserModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610101047061_Add card to user.resx">
+      <DependentUpon>201610101047061_Add card to user.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
