@@ -1,4 +1,4 @@
-.Registration, .Login {
+.Registration, .Login, .Edit {
     display: flex;
     justify-content: center;
     flex-direction: column;
