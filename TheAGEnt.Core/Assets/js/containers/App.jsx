@@ -132,7 +132,7 @@ module.exports = React.createClass({
         return (
             <MuiThemeProvider>
                 <div className='container'>
-                    <AppBar title="AG - You personal art place!" iconClassNameRight="muidocs-icon-navigation-expand-more" onLeftIconButtonTouchTap={this.handleToggle} iconElementRight={this.state.logged
+                    <AppBar title="AG - You personal art place!" onLeftIconButtonTouchTap={this.handleToggle} iconElementRight={this.state.logged
                         ? < FlatButton icon = { < MoreVertIcon />
                         }
                         onTouchTap = {
@@ -147,16 +147,16 @@ module.exports = React.createClass({
                             vertical: 'top'
                         }} onRequestClose={this.handleRequestClose} animation={PopoverAnimationVertical}>
                             <Menu>
-                                <MenuItem><Link to='/Settings'>Settings</Link></MenuItem>
+                                <MenuItem href="#Settings">Settings</MenuItem>
                                 <MenuItem primaryText="Log out" onTouchTap={this.handleLogOut}/>
                             </Menu>
                         </Popover>
                     </AppBar>
                     <Login_Form title="Here You'll enter to the amazing world of art!" modal={false} open={this.state.openLoginWindow} onRequestClose={this.handleCloseLoginWindow} updateAuthState={this.updateAuthState}/>
                     <Drawer docked={false} width={200} open={this.state.open} onRequestChange={(open) => this.setState({open})}>
-                        <MenuItem href="/" onTouchTap={this.handleClose}>Home</MenuItem>
-                        <MenuItem href="/AdminPanel" onTouchTap={this.handleClose}>Admin Panel</MenuItem>
-                        <MenuItem href="/Registration" onTouchTap={this.handleClose}>Registration</MenuItem>
+                        <MenuItem href="#" onTouchTap={this.handleClose}>Home</MenuItem>
+                        <MenuItem href="#AdminPanel" onTouchTap={this.handleClose}>Admin Panel</MenuItem>
+                        <MenuItem href="#Registration" onTouchTap={this.handleClose}>Registration</MenuItem>
                         <MenuItem href="/Swagger" onTouchTap={this.handleClose}>Public API</MenuItem>
                     </Drawer>
                     {this.props.children}
