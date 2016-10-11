@@ -196,6 +196,7 @@
     <Folder Include="Assets\content\" />
     <Folder Include="Assets\imgs\ProfileImages\Avatars\" />
     <Folder Include="Assets\imgs\ProfileImages\Cards\" />
+    <Folder Include="Assets\imgs\ProfileImages\Images\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -233,6 +234,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminPanelController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PhotosController.cs" />
     <Compile Include="Controllers\RegistrationController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
@@ -253,6 +255,7 @@
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Assets\css\site.css" />
     <Content Include="Assets\js\components\AdminPanel.jsx" />
+    <Content Include="Assets\js\components\AlbumsUpdate.jsx" />
     <Content Include="Assets\js\components\ImageUpload.jsx" />
     <Content Include="Assets\js\components\Registration.jsx" />
     <Content Include="Assets\js\components\SettingsPage.jsx" />

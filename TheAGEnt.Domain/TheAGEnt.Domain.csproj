@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\IMainUserManager.cs" />
+    <Compile Include="Abstract\IPhotoManager.cs" />
     <Compile Include="Entities\Album.cs" />
     <Compile Include="Entities\Comment.cs" />
     <Compile Include="Entities\Picture.cs" />
