@@ -1,5 +1,4 @@
-import DropzoneComponent from "react-dropzone-component"
-import SettingsPage from "./SettingsPage.jsx"
+import DropzoneComponent from "react-dropzone-component";
 
 module.exports = React.createClass({
     getInitialState: function() {
@@ -21,7 +20,7 @@ module.exports = React.createClass({
     render: function() {
         return (
             <div>
-              <h3>Uploading {this.props.name}</h3>
+              <h3>Uploading {this.props.name || "image"}</h3>
                 <DropzoneComponent config={this.state.componentConfig} eventHandlers={this.state.eventHandlers} djsConfig={this.state.djsConfig}/>
             </div>
         );
