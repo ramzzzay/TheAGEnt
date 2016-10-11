@@ -1,4 +1,4 @@
-.Registration, .Login, .Edit {
+.Registration, .Login, .UploadCard, .UploadAvatar , .Edit {
     display: flex;
     justify-content: center;
     flex-direction: column;
