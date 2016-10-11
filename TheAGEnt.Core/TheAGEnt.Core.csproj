@@ -256,6 +256,7 @@
     <Content Include="Assets\css\site.css" />
     <Content Include="Assets\js\components\AdminPanel.jsx" />
     <Content Include="Assets\js\components\AlbumsUpdate.jsx" />
+    <Content Include="Assets\js\components\FileUploader.jsx" />
     <Content Include="Assets\js\components\ImageUpload.jsx" />
     <Content Include="Assets\js\components\Registration.jsx" />
     <Content Include="Assets\js\components\SettingsPage.jsx" />
