@@ -33,14 +33,7 @@ namespace TheAGEnt.Core.Controllers
         [Route("GetUserAlbumsById")]
         [HttpGet]
         [Authorize(Roles = "user")]
-        //public async Task<List<Album>> GetCurrentUserAlbums() => await _photoManager.GetUserAlbumsById(User.Identity.GetUserId());
-        public async Task<List<Album>> GetCurrentUserAlbums()
-        {
-            var alb = await _photoManager.GetUserAlbumsById(User.Identity.GetUserId());
-            var oalb = alb.Select(a=> a.Name);
-            var dbg = "dbg";
-            return alb;
-        }
+        public async Task<List<Album>> GetCurrentUserAlbums() => await _photoManager.GetUserAlbumsById(User.Identity.GetUserId());
 
         // GET api/Photos/GetUserAlbumsNameById
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
@@ -79,16 +72,6 @@ namespace TheAGEnt.Core.Controllers
 
             var response = await _photoManager.ImageUpload(userId, $"/Assets/imgs/ProfileImages/Images/{fileName}", email, album);
 
-            var dbg = "dbg";
-
-            //var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-
-            //user.PathToPhoto = $"/Assets/imgs/ProfileImages/Images/{fileName}";
-
-            //var response = await UserManager.UpdateAsync(user);
-            //return response.Succeeded
-            //    ? Ok(new { Msg = response.Errors, IsOk = response.Succeeded, uploadedUrl = user.PathToPhoto })
-            //    : GetErrorResult(response);
             return Ok(new { Msg = response.Errors, IsOk = response.Succeeded });
         }
     }
