@@ -105,6 +105,26 @@ namespace TheAGEnt.Core.Controllers
             return viewsUser;
         }
 
+        // GET api/Account/GetAllUsersMiniInfo
+        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
+        [Route("GetAllUsersMiniInfo")]
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IEnumerable<MiniUserInfoViewModer>> GetAllUsersMiniInfo()
+        {
+            var users = await UserManager.GetAllUsersAsync();
+            var viewsUser = users.Select(user => new MiniUserInfoViewModer()
+            {
+                Email = user.Email,
+                Name = user.Name,
+                Surname = user.Surname,
+                NickName = user.NickName,
+                PathToPhoto = user.PathToPhoto
+            });
+
+            return viewsUser;
+        }
+
         // POST api/Account/UpdateAllUserInfo
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
         [Route("UpdateUserInfo")]
