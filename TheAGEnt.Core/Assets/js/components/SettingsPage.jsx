@@ -13,6 +13,8 @@ import SwipeableViews from 'react-swipeable-views';
 import ImageUpload from "./ImageUpload.jsx";
 import UpdateUserInfo from "./UpdateUserInfo.jsx";
 
+import AlbumsUpdate from "./AlbumsUpdate.jsx";
+
 const styles = {
     headline: {
         fontSize: 24,
@@ -94,16 +96,20 @@ module.exports = React.createClass({
                         <Tab label="Upload avatar" value={0}/>
                         <Tab label="Upload card" value={1}/>
                         <Tab label="Update You info" value={2}/>
+                        <Tab label="Add album" value={3}/>
                     </Tabs>
                     <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}>
-                        <div>
+                        <div className="UploadAvatar">
                             <ImageUpload url="api/Account/UploadUserAvatar" name="avatar" changeState={this.changingPathToAvatar}/>
                         </div>
-                        <div style={styles.slide}>
+                        <div style={styles.slide} className="UploadCard">
                             <ImageUpload url="api/Account/UploadUserCard" name="card" changeState={this.changingPathToCard}/>
                         </div>
                         <div style={styles.slide}>
                             <UpdateUserInfo changingUserInfo={this.changingUserInfo} email={this.state.email} name={this.state.name} surname={this.state.surname} nickname={this.state.nickname} address={this.state.address}/>
+                        </div>
+                        <div style={styles.slide}>
+                            <AlbumsUpdate email={this.state.email}/>
                         </div>
                     </SwipeableViews>
             </CardActions>
