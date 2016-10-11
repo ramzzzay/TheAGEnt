@@ -47,6 +47,16 @@ namespace TheAGEnt.Core.Models
         public ICollection<IdentityUserClaim> Claims { get; set; }
     }
 
+    public class MiniUserInfoViewModer
+    {
+        public string Email { get; set; }
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public string NickName { get; set; }
+        public string PathToPhoto { get; set; }
+        public string PathToCard { get; set; }
+    }
+
     public class UserLoginInfoViewModel
     {
         public string LoginProvider { get; set; }
