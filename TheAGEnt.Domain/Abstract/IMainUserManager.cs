@@ -11,7 +11,7 @@ namespace TheAGEnt.Domain.Abstract
     {
         Task<IdentityResult> ChangePasswordAsync(string email, string currentPassword, string newPassword);
         Task<IdentityResult> CreateAsync(User u);
-        Task<List<User>> ShowAsync();
+        Task<List<User>> GetAllUsersAsync();
         Task<IdentityResult> AddClaimToUserAsync(string email, string claimName);
         Task<User> FindAsync(string name, string password);
         Task<ClaimsIdentity> CreateIdentityAsync(User user, string authenticationType);

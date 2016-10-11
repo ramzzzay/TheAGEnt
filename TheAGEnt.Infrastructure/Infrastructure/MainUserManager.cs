@@ -93,7 +93,7 @@ namespace TheAGEnt.Infrastructure.Infrastructure
             return await _applicationUserManager.RemoveLoginAsync(userId, userInfo);
         }
 
-        public async Task<List<User>> ShowAsync()
+        public async Task<List<User>> GetAllUsersAsync()
         {
             return await _applicationUserManager.Users.ToListAsync();
         }

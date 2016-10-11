@@ -20,8 +20,9 @@ namespace TheAGEnt.Infrastructure.Infrastructure
         public async Task<List<Album>> GetUserAlbumsById(string userId)
         {
             var response = await _context.Users.Where(u => u.Id == userId).SelectMany(u => u.Albums).ToListAsync();
+
             var query = _context.Users.Where(u => u.Id == userId).SelectMany(u => u.Albums).ToString(); //TODO: For debug query
-            var dbg = "dbg";
+
             return response;
         }
 
@@ -32,14 +33,22 @@ namespace TheAGEnt.Infrastructure.Infrastructure
         public async Task<IdentityResult> ImageUpload(string userId, string filePath, string email, string album)
         {
             var user = _context.Users.Single(u => u.Id == userId);
-            if (user.Albums.Where(a => a.Name == album).ToList().Count == 0)
+
+            if (user.Albums.All(a => a.Name != album))
             {
                 user.Albums.Add(new Album() { Name = album, Discription = "temp"});
-                var d = "dbg";
             }
-            user.Albums.Single(a=>a.Name ==album).Pictures.Add(new Picture() {Discription = "temp",Label = "temp",PathToImage = filePath});
+
+            user.Albums.Single(a=>a.Name ==album)
+                ?.Pictures.Add(new Picture()
+            {
+                Discription = "temp",
+                Label = "temp",
+                PathToImage = filePath
+            });
+
             var result = await _context.SaveChangesAsync();
-            var dd = "dbgh";
+
             return IdentityResult.Success;
         }
     }
