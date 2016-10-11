@@ -13,7 +13,6 @@ using Autofac.Integration.Owin;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
-using Microsoft.Owin.Security.Cookies;
 using TheAGEnt.Core.Models;
 using TheAGEnt.Core.Util;
 using TheAGEnt.Domain.Abstract;
@@ -176,7 +175,7 @@ namespace TheAGEnt.Core.Controllers
 
             var response = await UserManager.UpdateAsync(user);
             return response.Succeeded
-                ? Ok(new { Msg = response.Errors, IsOk = response.Succeeded, uploadedUrl = user.PathToPhoto })
+                ? Ok(new {Msg = response.Errors, IsOk = response.Succeeded, uploadedUrl = user.PathToPhoto})
                 : GetErrorResult(response);
         }
 
@@ -203,17 +202,8 @@ namespace TheAGEnt.Core.Controllers
 
             var response = await UserManager.UpdateAsync(user);
             return response.Succeeded
-                ? Ok(new { Msg = response.Errors, IsOk = response.Succeeded, uploadedUrl = user.PathToPhoto })
+                ? Ok(new {Msg = response.Errors, IsOk = response.Succeeded, uploadedUrl = user.PathToPhoto})
                 : GetErrorResult(response);
-        }
-
-        // POST api/Account/Logout
-        [Route("Logout")]
-        [Authorize(Roles = "user")]
-        public IHttpActionResult Logout()
-        {
-            Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
-            return Ok();
         }
 
 
