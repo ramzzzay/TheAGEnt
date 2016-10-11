@@ -92,6 +92,7 @@
     <Compile Include="Concrete\TheAGEntContext.cs" />
     <Compile Include="Infrastructure\ApplicationUserManager.cs" />
     <Compile Include="Infrastructure\MainUserManager.cs" />
+    <Compile Include="Infrastructure\PhotoManager.cs" />
     <Compile Include="Migrations\201610060737440_init.cs" />
     <Compile Include="Migrations\201610060737440_init.Designer.cs">
       <DependentUpon>201610060737440_init.cs</DependentUpon>
