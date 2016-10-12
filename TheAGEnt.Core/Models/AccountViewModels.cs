@@ -5,6 +5,19 @@ namespace TheAGEnt.Core.Models
 {
     public class AccountViewModels
     {
+        public class AlbumViewModel
+        {
+            public string Name { get; set; }
+            public string Discription { get; set; }
+        }
+
+        public class PictureViewModel
+        {
+            public string Label { get; set; }
+            public string Discription { get; set; }
+            public string PathToImage { get; set; }
+        }
+
         public class ExternalLoginViewModel
         {
             public string Name { get; set; }
@@ -35,7 +48,7 @@ namespace TheAGEnt.Core.Models
         }
     }
 
-    public class PersonalUserInfoViewModer
+    public class PersonalUserInfoViewModel
     {
         public string Email { get; set; }
         public string Name { get; set; }
