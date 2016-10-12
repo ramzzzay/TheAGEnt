@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Web.Http;
 using Autofac;
+using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -20,9 +21,11 @@ namespace TheAGEnt.Core.Util
             var builder = new ContainerBuilder();
             var config = new HttpConfiguration();
 
+            builder.RegisterControllers(typeof(WebApiApplication).Assembly);
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
             builder.RegisterType<AccountController>().InstancePerRequest();
             builder.RegisterType<PhotosController>().InstancePerRequest();
+            builder.RegisterType<EditingInfoController>().InstancePerRequest();
 
             //dependenses resolving
             builder.RegisterType<MainUserManager>().As<IMainUserManager>().InstancePerRequest();
@@ -49,10 +52,11 @@ namespace TheAGEnt.Core.Util
             // Get your HttpConfiguration.
             var config = GlobalConfiguration.Configuration;
 
-            // Register your Web API controllers.
+            builder.RegisterControllers(typeof(WebApiApplication).Assembly);
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
             builder.RegisterType<AccountController>().InstancePerRequest();
             builder.RegisterType<PhotosController>().InstancePerRequest();
+            builder.RegisterType<EditingInfoController>().InstancePerRequest();
 
             //dependenses resolving
             builder.RegisterType<MainUserManager>().As<IMainUserManager>().InstancePerRequest();
