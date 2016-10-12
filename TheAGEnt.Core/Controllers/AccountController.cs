@@ -69,10 +69,10 @@ namespace TheAGEnt.Core.Controllers
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
         [Route("AllUserInfo")]
         [Authorize(Roles = "user")]
-        public async Task<PersonalUserInfoViewModer> GetAllUserInfo()
+        public async Task<PersonalUserInfoViewModel> GetAllUserInfo()
         {
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-            var viewUser = new PersonalUserInfoViewModer
+            var viewUser = new PersonalUserInfoViewModel
             {
                 Email = user.Email,
                 Name = user.Name,
@@ -129,7 +129,7 @@ namespace TheAGEnt.Core.Controllers
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
         [Route("UpdateUserInfo")]
         [Authorize(Roles = "user")]
-        public async Task<IHttpActionResult> UpdateUserInfo(PersonalUserInfoViewModer updatedUser)
+        public async Task<IHttpActionResult> UpdateUserInfo(PersonalUserInfoViewModel updatedUser)
         {
             if (!ModelState.IsValid) return BadRequest("Wrong model");
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
@@ -151,7 +151,7 @@ namespace TheAGEnt.Core.Controllers
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
         [Route("UpdateUserInfoByAdmin")]
         [Authorize(Roles = "admin")]
-        public async Task<IHttpActionResult> UpdateUserInfoByAdmin(PersonalUserInfoViewModer updatedUser)
+        public async Task<IHttpActionResult> UpdateUserInfoByAdmin(PersonalUserInfoViewModel updatedUser)
         {
             if (!ModelState.IsValid) return BadRequest("Wrong model");
             var user = await UserManager.FindByEmailAsync(updatedUser.Email);

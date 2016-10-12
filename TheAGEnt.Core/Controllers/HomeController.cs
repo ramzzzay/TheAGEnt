@@ -10,10 +10,5 @@ namespace TheAGEnt.Core.Controllers
 
             return View();
         }
-
-        public ActionResult AdminPanel()
-        {
-            return View();
-        }
     }
 }
