@@ -3,7 +3,7 @@ import IconButton from 'material-ui/IconButton';
 import Subheader from 'material-ui/Subheader';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 
-import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 
 const styles = {
     root: {
@@ -44,7 +44,7 @@ module.exports = React.createClass({
                     {this.state.users.map((user) => (
                         <GridTile key={user.img} title={user.Email} subtitle={< span > by < b > {
                             user.Name
-                        } < /b></span >} actionIcon={< IconButton > <StarBorder color="white"/> < /IconButton>}> // TODO: go to links on click
+                        } < /b></span >} actionIcon={<FlatButton href={`${user.NickName}`}>React Router</FlatButton>}>
                             <img src={user.PathToPhoto}/>
                         </GridTile>
                     ))}
