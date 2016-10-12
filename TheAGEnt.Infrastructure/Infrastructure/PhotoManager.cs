@@ -29,6 +29,8 @@ namespace TheAGEnt.Infrastructure.Infrastructure
         public IQueryable<string> GetUserAlbumsNameById(string userId) => _context.Users.Where(u => u.Id == userId).SelectMany(u => u.Albums).Select(a => a.Name);
 
         public async Task<List<Album>> GetUserAlbumsByEmail(string userEmail) => await _context.Users.Where(u => u.Email == userEmail).SelectMany(u => u.Albums).ToListAsync();
+        public async Task<List<Album>> GetUserAlbumsNameByNickName(string nickname) => await _context.Users.Where(u => u.NickName == nickname).SelectMany(u => u.Albums).ToListAsync();
+        public async Task<List<Picture>> GetUserPhotosByNickNameAndAlbumName(string nickname,string albumName) => await _context.Users.Where(u=>u.NickName == nickname).SelectMany(a=>a.Albums).Where(a=>a.Name == albumName).SelectMany(p=>p.Pictures).ToListAsync();
 
         public async Task<IdentityResult> ImageUpload(string userId, string filePath, string email, string album)
         {
