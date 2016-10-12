@@ -60,6 +60,7 @@ const Login_Form = React.createClass({
         }).then(r => r.json()).then(data => {
             var strOfCookies = data.Claims.reduce((x, y) => x + ";" + y.ClaimValue, "");
             Cookie.save('claims', strOfCookies);
+            Cookie.save('nickname', data.NickName);
         });
     },
     render: function() {
@@ -77,7 +78,7 @@ const Login_Form = React.createClass({
 
 module.exports = React.createClass({
     getInitialState: function() {
-        return {open: false, openUserMenu: false, openLoginWindow: false, LoggedUserName: Cookie.load('userName'), logged: false};
+        return {open: false, openUserMenu: false, openLoginWindow: false, LoggedUserName: Cookie.load('userName'), logged: false, nickName:""};
     },
     handleToggle: function() {
         this.setState({
@@ -105,6 +106,9 @@ module.exports = React.createClass({
     },
     updateAuthState: function(flag, userName) {
         this.setState({logged: flag, LoggedUserName: userName});
+    },
+    updateNickNameState:function(nickname){
+      this.setState({nickName:nickname});
     },
     handleLogOut: function() {
         Cookie.save('userName', "");
@@ -148,11 +152,12 @@ module.exports = React.createClass({
                         }} onRequestClose={this.handleRequestClose} animation={PopoverAnimationVertical}>
                             <Menu>
                                 <MenuItem href="/Settings">Settings</MenuItem>
+                                <MenuItem href={`EditingInfo?email=${this.state.nickName}`}>Edit info</MenuItem>
                                 <MenuItem primaryText="Log out" onTouchTap={this.handleLogOut}/>
                             </Menu>
                         </Popover>
                     </AppBar>
-                    <Login_Form title="Here You'll enter to the amazing world of art!" modal={false} open={this.state.openLoginWindow} onRequestClose={this.handleCloseLoginWindow} updateAuthState={this.updateAuthState}/>
+                    <Login_Form updateNickNameState={this.updateNickNameState} title="Here You'll enter to the amazing world of art!" modal={false} open={this.state.openLoginWindow} onRequestClose={this.handleCloseLoginWindow} updateAuthState={this.updateAuthState}/>
                     <Drawer docked={false} width={200} open={this.state.open} onRequestChange={(open) => this.setState({open})}>
                         <MenuItem href="/" onTouchTap={this.handleClose}>Home</MenuItem>
                         <MenuItem href="/AdminPanel" onTouchTap={this.handleClose}>Admin Panel</MenuItem>
