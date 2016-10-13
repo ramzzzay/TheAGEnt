@@ -41,5 +41,7 @@
     "webpack": "^1.13.2",
     "webpack-notifier": "^1.4.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "flow-bin": "^0.33.0"
+  }
 }
