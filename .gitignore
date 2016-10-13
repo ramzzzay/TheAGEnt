@@ -32,3 +32,4 @@ packages/
 *.map
 bundle.*
 TheAGEnt.Core/Assets/imgs/ProfileImages/
+TheAGEnt.Core/.idea
