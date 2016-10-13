@@ -29,3 +29,7 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 node_modules/
 packages/
+*.map
+bundle.*
+TheAGEnt.Core/Assets/imgs/ProfileImages/
+TheAGEnt.Core/.idea
