@@ -222,7 +222,7 @@ namespace TheAGEnt.Core.Controllers
 
             var response = await UserManager.UpdateAsync(user);
             return response.Succeeded
-                ? Ok(new {Msg = response.Errors, IsOk = response.Succeeded, uploadedUrl = user.PathToPhoto})
+                ? Ok(new {Msg = response.Errors, IsOk = response.Succeeded, uploadedUrl = user.PathToCard})
                 : GetErrorResult(response);
         }
 
