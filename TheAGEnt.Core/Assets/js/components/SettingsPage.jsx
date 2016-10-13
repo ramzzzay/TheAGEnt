@@ -6,7 +6,6 @@ import {
     CardTitle,
     CardText
 } from 'material-ui/Card';
-import FlatButton from "material-ui/FlatButton";
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 
