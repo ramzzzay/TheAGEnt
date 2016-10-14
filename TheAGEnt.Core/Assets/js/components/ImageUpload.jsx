@@ -1,6 +1,10 @@
 import DropzoneComponent from "react-dropzone-component";
 
 module.exports = React.createClass({
+
+    propTypes: {
+        test: React.PropTypes.string.isRequired
+    },
     getInitialState: function() {
         return {
             componentConfig: {
