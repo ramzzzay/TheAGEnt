@@ -3,7 +3,6 @@ using System.Web;
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Owin;
-using Microsoft.AspNet.Identity;
 using TheAGEnt.Core.Models;
 using TheAGEnt.Domain.Abstract;
 
@@ -15,7 +14,6 @@ namespace TheAGEnt.Core.Controllers
 
         public EditingInfoController()
         {
-            
         }
 
         public EditingInfoController(IMainUserManager userManager)
@@ -31,17 +29,18 @@ namespace TheAGEnt.Core.Controllers
             }
             set { _userManager = value; }
         }
+
         // GET: EditingInfo
         public async Task<ActionResult> Index(string email)
         {
             var user = await UserManager.FindByEmailAsync(email);
-            var viewUser = new PersonalUserInfoViewModel()
+            var viewUser = new PersonalUserInfoViewModel
             {
                 Email = user.Email,
                 Name = user.Name,
                 Surname = user.Surname,
                 NickName = user.NickName,
-                Address = user.Address,
+                Address = user.Address
             };
             return View(viewUser);
         }

@@ -5,16 +5,12 @@ injectTapEventPlugin();
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import AppBar from 'material-ui/AppBar';
-import IconButton from 'material-ui/IconButton';
-import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 
 import Drawer from 'material-ui/Drawer';
 
 import FlatButton from 'material-ui/FlatButton';
-import FontIcon from 'material-ui/FontIcon';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import {fullWhite} from 'material-ui/styles/colors';
 import {Popover, PopoverAnimationVertical} from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 
@@ -78,7 +74,14 @@ const Login_Form = React.createClass({
 
 module.exports = React.createClass({
     getInitialState: function() {
-        return {open: false, openUserMenu: false, openLoginWindow: false, LoggedUserName: Cookie.load('userName'), logged: false, nickName:""};
+        return {
+            open: false,
+            openUserMenu: false,
+            openLoginWindow: false,
+            LoggedUserName: Cookie.load('userName'),
+            logged: false,
+            nickName: Cookie.load('nickname')
+        };
     },
     handleToggle: function() {
         this.setState({
@@ -104,8 +107,8 @@ module.exports = React.createClass({
     handleCloseLoginWindow: function() {
         this.setState({openLoginWindow: false});
     },
-    updateAuthState: function(flag, userName) {
-        this.setState({logged: flag, LoggedUserName: userName});
+    updateAuthState: function(flag, userName, nickName) {
+        this.setState({logged: flag, LoggedUserName: userName,nickName:nickName});
     },
     updateNickNameState:function(nickname){
       this.setState({nickName:nickname});
@@ -114,10 +117,11 @@ module.exports = React.createClass({
         Cookie.save('userName', "");
         Cookie.save('tokenKey', "");
         Cookie.save('claims', "");
-        this.updateAuthState(false, "");
+        Cookie.save('nickname', "");
+        this.updateAuthState(false, "","");
     },
     componentDidMount: function() {
-        if (typeof this.state.LoggedUserName !== "undefined" && this.state.LoggedUserName !== "") {
+        if (typeof this.state.LoggedUserName !== "undefined" && this.state.LoggedUserName !== "" && this.state.nickName!=="") {
             this.setState({logged: true});
         } else {
             this.setState({logged: false});
@@ -151,9 +155,9 @@ module.exports = React.createClass({
                             vertical: 'top'
                         }} onRequestClose={this.handleRequestClose} animation={PopoverAnimationVertical}>
                             <Menu>
-                                <MenuItem href="/Settings">Settings</MenuItem>
-                                <MenuItem href={`EditingInfo?email=${this.state.nickName}`}>Edit info</MenuItem>
-                                <MenuItem primaryText="Log out" onTouchTap={this.handleLogOut}/>
+                                <MenuItem href="#Settings">Settings</MenuItem>
+                                <MenuItem href={`/EditingInfo?email=${this.state.nickName}`}>Edit info</MenuItem>
+                                <MenuItem primaryText="Log out" href="/" onTouchTap={this.handleLogOut}/>
                             </Menu>
                         </Popover>
                     </AppBar>

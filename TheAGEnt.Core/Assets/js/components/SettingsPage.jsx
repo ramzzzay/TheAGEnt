@@ -83,7 +83,7 @@ module.exports = React.createClass({
             <div ref="SettingsPage">
             <Card>
                 <CardHeader title={this.state.name} subtitle={this.state.surname} avatar={this.state.pathToPhoto}/>
-                <CardMedia overlay={< CardTitle title = "Overlay title" subtitle = "Overlay subtitle" />}>
+                <CardMedia overlay={< CardTitle title = {`${this.state.name}'s home`} subtitle = "...and dreams!" />}>
                     <img src={this.state.pathToCard}/>
                 </CardMedia>
                 <CardTitle title="Card title" subtitle="Card subtitle"/>
