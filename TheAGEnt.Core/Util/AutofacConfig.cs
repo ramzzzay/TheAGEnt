@@ -26,6 +26,7 @@ namespace TheAGEnt.Core.Util
             builder.RegisterType<AccountController>().InstancePerRequest();
             builder.RegisterType<PhotosController>().InstancePerRequest();
             builder.RegisterType<EditingInfoController>().InstancePerRequest();
+            builder.RegisterType<RegistrationController>().InstancePerRequest();
 
             //dependenses resolving
             builder.RegisterType<MainUserManager>().As<IMainUserManager>().InstancePerRequest();
@@ -57,6 +58,7 @@ namespace TheAGEnt.Core.Util
             builder.RegisterType<AccountController>().InstancePerRequest();
             builder.RegisterType<PhotosController>().InstancePerRequest();
             builder.RegisterType<EditingInfoController>().InstancePerRequest();
+            builder.RegisterType<RegistrationController>().InstancePerRequest();
 
             //dependenses resolving
             builder.RegisterType<MainUserManager>().As<IMainUserManager>().InstancePerRequest();
