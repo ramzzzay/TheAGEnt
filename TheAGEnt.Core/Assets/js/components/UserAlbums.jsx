@@ -1,7 +1,5 @@
 import {GridList, GridTile} from 'material-ui/GridList';
-import IconButton from 'material-ui/IconButton';
 import Subheader from 'material-ui/Subheader';
-import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 
 import FlatButton from 'material-ui/FlatButton';
 
@@ -35,7 +33,6 @@ module.exports = React.createClass({
   },
   componentDidMount: function() {
     this.getAlbums();
-    Cookie.save('nickname', this.props.params.user);
   },
   render: function() {
     console.log(this.state.albums);
@@ -46,7 +43,7 @@ module.exports = React.createClass({
               {this.state.albums.map((album) => (
                   <GridTile key={album.img} title={album.Name} subtitle={< span > by < b > {
                       this.props.params.user
-                  } < /b></span >} actionIcon={<FlatButton href={`${this.props.params.user}/${album.Name}`}>React Router</FlatButton>}>
+                  } </b></span >} actionIcon={<FlatButton label="Pick" href={`#${this.props.params.user}/${album.Name}`}/>}>
                       <img src={album.PathToPhoto}/>
                   </GridTile>
               ))}
