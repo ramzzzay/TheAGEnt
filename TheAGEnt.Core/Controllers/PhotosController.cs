@@ -69,6 +69,7 @@ namespace TheAGEnt.Core.Controllers
             var pictures = await _photoManager.GetUserPhotosByNickNameAndAlbumName(nickname,albumName);
             var response = pictures.Select(p => new AccountViewModels.PictureViewModel()
             {
+                Id = p.Id,
                 Label = p.Label,
                 Discription = p.Discription,
                 PathToImage = p.PathToImage
@@ -76,12 +77,40 @@ namespace TheAGEnt.Core.Controllers
             return response;
         }
 
+        // GET api/Photos/GetCommentsToPhotoById
+        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
+        [Route("GetCommentsToPhotoById")]
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IEnumerable<AccountViewModels.CommentViewModel>> GetCommentsToPhotoById(string nickName,string albumName,int photoId)
+        {
+            var comments = await _photoManager.GetCommentsToPhotoById(nickName,albumName,photoId);
+
+            var response = comments.Select(p => new AccountViewModels.CommentViewModel()
+            {
+                NickName = p.UserId.NickName,
+                Message = p.Message
+            });
+
+            return response;
+        }
+
+        // POST api/Photos/SendComment
+        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
+        [Route("SendComment")]
+        [HttpPost]
+        [Authorize(Roles = "user")]
+        public async Task<IHttpActionResult> SendComment(AccountViewModels.CommentSendViewModel comment)
+            => Ok(await _photoManager.SendCommentsToPhotoById
+                (comment.NickNameOfSender, comment.NickNameOfPhotoOwner, comment.AlbumName, comment.PhotoId, comment.Message));
+
         // GET api/Photos/GetAnyUserAlbums
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
         [Route("GetAnyUserAlbums")]
         [HttpGet]
         [Authorize(Roles = "user")]
-        public async Task<List<Album>> GetAnyUserAlbums(string userEmail) => await _photoManager.GetUserAlbumsByEmail(userEmail);
+        public async Task<List<Album>> GetAnyUserAlbums(string userEmail)
+            => await _photoManager.GetUserAlbumsByEmail(userEmail);
 
         [Route("UploadUserImage")]
         // POST api/Photos/UploadUserImage

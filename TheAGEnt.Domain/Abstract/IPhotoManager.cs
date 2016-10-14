@@ -14,5 +14,7 @@ namespace TheAGEnt.Domain.Abstract
         Task<IdentityResult> ImageUpload(string userId,string filePath,string email, string album);
         Task<List<Album>> GetUserAlbumsNameByNickName(string nickname);
         Task<List<Picture>> GetUserPhotosByNickNameAndAlbumName(string nickname,string albumName);
+        Task<List<Comment>> GetCommentsToPhotoById(string nickName, string albumName, int photoId);
+        Task<IdentityResult> SendCommentsToPhotoById(string nickNameOfSender, string nickNameOfPhotoOwner, string albumName, int photoId, string message);
     }
 }
