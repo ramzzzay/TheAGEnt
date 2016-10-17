@@ -8,11 +8,21 @@ import {
 } from 'material-ui/Card';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
-
 import ImageUpload from "./ImageUpload.jsx";
 import UpdateUserInfo from "./UpdateUserInfo.jsx";
-
 import AlbumsUpdate from "./AlbumsUpdate.jsx";
+import Avatar from 'material-ui/Avatar';
+
+const Av = React.createClass({
+    render: function () {
+        return (
+            <div>
+                Hello to
+                <Avatar src={this.props.pathToPhoto} size="200" />
+            </div>
+        );
+    }
+});
 
 const styles = {
     headline: {
@@ -23,6 +33,11 @@ const styles = {
     },
     slide: {
         padding: 10
+    },
+    avatar:{
+        position: 'absolute',
+        zIndex:1,
+        left:'50%'
     }
 };
 
@@ -82,11 +97,9 @@ module.exports = React.createClass({
         return (
             <div ref="SettingsPage">
             <Card>
-                <CardHeader title={this.state.name} subtitle={this.state.surname} avatar={this.state.pathToPhoto}/>
-                <CardMedia overlay={< CardTitle title = {`${this.state.name}'s home`} subtitle = "...and dreams!" />}>
-                    <img src={this.state.pathToCard}/>
+                <CardMedia overlay={< CardTitle title = {<Av pathToPhoto={this.state.pathToPhoto} />} subtitle = {`${this.state.name} ${this.state.surname}'s home`} />}>
+                    <img className="Card-image" src={this.state.pathToCard}/>
                 </CardMedia>
-                <CardTitle title="Card title" subtitle="Card subtitle"/>
                 <CardText>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi. Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque. Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
                 </CardText>
