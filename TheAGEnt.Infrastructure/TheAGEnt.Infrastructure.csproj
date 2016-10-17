@@ -121,6 +121,10 @@
     <Compile Include="Migrations\201610171047089_CoverToAlbum.Designer.cs">
       <DependentUpon>201610171047089_CoverToAlbum.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610171423211_AddGrades.cs" />
+    <Compile Include="Migrations\201610171423211_AddGrades.Designer.cs">
+      <DependentUpon>201610171423211_AddGrades.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -145,6 +149,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610171047089_CoverToAlbum.resx">
       <DependentUpon>201610171047089_CoverToAlbum.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610171423211_AddGrades.resx">
+      <DependentUpon>201610171423211_AddGrades.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
