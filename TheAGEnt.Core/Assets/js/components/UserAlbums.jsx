@@ -35,16 +35,15 @@ module.exports = React.createClass({
     this.getAlbums();
   },
   render: function() {
-    console.log(this.state.albums);
     return (
       <div style={styles.root}>
-          <GridList cellHeight={180} style={styles.gridList}>
+          <GridList cellHeight={180}>
               <Subheader>Albums</Subheader>
               {this.state.albums.map((album) => (
-                  <GridTile key={album.img} title={album.Name} subtitle={< span > by < b > {
+                  <GridTile key={album.PathToCover} title={album.Name} subtitle={< span > by < b > {
                       this.props.params.user
                   } </b></span >} actionIcon={<FlatButton label="Pick" href={`#${this.props.params.user}/${album.Name}`}/>}>
-                      <img src={album.PathToPhoto}/>
+                      <img src={album.PathToCover}/>
                   </GridTile>
               ))}
           </GridList>

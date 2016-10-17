@@ -113,6 +113,14 @@
     <Compile Include="Migrations\201610101047061_Add card to user.Designer.cs">
       <DependentUpon>201610101047061_Add card to user.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610170802483_CommentTime.cs" />
+    <Compile Include="Migrations\201610170802483_CommentTime.Designer.cs">
+      <DependentUpon>201610170802483_CommentTime.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610171047089_CoverToAlbum.cs" />
+    <Compile Include="Migrations\201610171047089_CoverToAlbum.Designer.cs">
+      <DependentUpon>201610171047089_CoverToAlbum.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -131,6 +139,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610101047061_Add card to user.resx">
       <DependentUpon>201610101047061_Add card to user.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610170802483_CommentTime.resx">
+      <DependentUpon>201610170802483_CommentTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610171047089_CoverToAlbum.resx">
+      <DependentUpon>201610171047089_CoverToAlbum.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

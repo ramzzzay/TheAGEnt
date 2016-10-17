@@ -37,7 +37,7 @@ module.exports = React.createClass({
     render: function() {
         return (
             <div style={styles.root}>
-                <GridList cellHeight={180} style={styles.gridList}>
+                <GridList cellHeight={180}>
                     <Subheader>Users</Subheader>
                     {this.state.users.map((user) => (
                         <GridTile key={user.img} title={user.Email} subtitle={< span > by < b > {

@@ -15,6 +15,6 @@ namespace TheAGEnt.Domain.Abstract
         Task<List<Album>> GetUserAlbumsNameByNickName(string nickname);
         Task<List<Picture>> GetUserPhotosByNickNameAndAlbumName(string nickname,string albumName);
         Task<List<Comment>> GetCommentsToPhotoById(string nickName, string albumName, int photoId);
-        Task<IdentityResult> SendCommentsToPhotoById(string nickNameOfSender, string nickNameOfPhotoOwner, string albumName, int photoId, string message);
+        Task<IdentityResult> SendCommentsToPhotoById(string nickNameOfSender, string photoOwnerNickname, string albumName, int photoId, string message);
     }
 }

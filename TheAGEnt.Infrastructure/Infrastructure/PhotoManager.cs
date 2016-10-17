@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
@@ -45,10 +46,10 @@ namespace TheAGEnt.Infrastructure.Infrastructure
             .SelectMany(p => p.Pictures).Where(p=>p.Id == photoId)
             .SelectMany(c=>c.Comment).ToListAsync();
 
-        public async Task<IdentityResult> SendCommentsToPhotoById(string nickNameOfSender,string nickNameOfPhotoOwner, string albumName, int photoId,string message)
+        public async Task<IdentityResult> SendCommentsToPhotoById(string nickNameOfSender,string photoOwnerNickname, string albumName, int photoId,string message)
         {
             var user = _context.Users.FirstOrDefault(x => x.NickName == nickNameOfSender);
-            _context.Users.FirstOrDefault(x=>x.NickName == nickNameOfPhotoOwner)?.Albums.FirstOrDefault(a=>a.Name==albumName)?.Pictures.FirstOrDefault(p=>p.Id==photoId)?.Comment.Add(new Comment() {Message = message,UserId = user});
+            _context.Users.FirstOrDefault(x=>x.NickName == photoOwnerNickname)?.Albums.FirstOrDefault(a=>a.Name==albumName)?.Pictures.FirstOrDefault(p=>p.Id==photoId)?.Comment.Add(new Comment() {Message = message,UserId = user, PostingTime = DateTime.UtcNow});
             var response = await _context.SaveChangesAsync();
             return response >=1 ? new IdentityResult("OK") : new IdentityResult("Error");
         }
@@ -59,7 +60,7 @@ namespace TheAGEnt.Infrastructure.Infrastructure
 
             if (user.Albums.All(a => a.Name != album))
             {
-                user.Albums.Add(new Album() { Name = album, Discription = "temp"});
+                user.Albums.Add(new Album() { Name = album, Discription = "temp",PathToCover = filePath});
             }
 
             user.Albums.Single(a=>a.Name ==album)
