@@ -55,6 +55,7 @@ namespace TheAGEnt.Core.Controllers
             {
                 Name = a.Name,
                 Discription = a.Discription,
+                PathToCover = a.PathToCover
             });
             return response;
         }
@@ -89,7 +90,8 @@ namespace TheAGEnt.Core.Controllers
             var response = comments.Select(p => new AccountViewModels.CommentViewModel()
             {
                 NickName = p.UserId.NickName,
-                Message = p.Message
+                Message = p.Message,
+                PostingTime = p.PostingTime
             });
 
             return response;

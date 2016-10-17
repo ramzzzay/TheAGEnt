@@ -5,8 +5,13 @@ import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
+import IconButton from 'material-ui/IconButton';
+import {cyan700} from 'material-ui/styles/colors';
+import SendIcon from 'material-ui/svg-icons/content/send';
+
 const customContentStyle = {
-    display: 'flex'
+    display: 'flex',
+    maxWidth: 'auto'
 };
 
 const Full_Image = React.createClass({
@@ -21,6 +26,9 @@ const Full_Image = React.createClass({
                 "Authorization": "bearer " + Cookie.load('tokenInfo')
             })
         }).then(r => r.json()).then(c => this.setState({comments: Array.from(c)}));
+    },
+    cleanForm: function () {
+      this.setState({message:""});
     },
     sendMessage: function () {
         var data = {
@@ -37,7 +45,10 @@ const Full_Image = React.createClass({
                 "Authorization": "bearer " + Cookie.load('tokenInfo')
             }),
             body: JSON.stringify(data)
-        }).then(()=>this.getComments());
+        }).then(()=>{
+            this.getComments();
+            this.cleanForm();
+        });
     },
     _messageFieldChange: function(e) {
         this.setState({message: e.target.value});
@@ -54,14 +65,18 @@ const Full_Image = React.createClass({
                 <div ref="Image" className="Comments">
                     <img className="Full-Image" src={this.props.imageUrl}/>
                 </div>
-                <div className="Comments-List">
-                    Comments blob!
+                <div className="Comments-box">
+                    <div className="Comments-List">
+                    <span>{this.state.comments.length}</span> Comments
                     {this.state.comments.map(c=>(
-                        <div className="Message-from-user">{c.NickName} say:  {c.Message}</div>
+                        <div className="Message-from-user">{c.NickName} say:  {c.Message} in {c.PostingTime}</div>
                     ))}
-                    <div className="Comment-box">
+                    </div>
+                    <div className="Comment-send">
                         <TextField value={this.state.message} onChange={this._messageFieldChange} hintText="Enter message" multiLine={true}/>
-                        <RaisedButton label="Send my message!" primary={true} onClick={this.sendMessage}/>
+                        <IconButton tooltip="Send" touch={true} onClick={this.sendMessage} tooltipPosition="bottom-center">
+                            <SendIcon color={cyan700}/>
+                        </IconButton>
                     </div>
                 </div>
                 </div>
@@ -110,7 +125,7 @@ module.exports = React.createClass({
   render: function() {
     return (
       <div style={styles.root}>
-          <GridList cellHeight={180} style={styles.gridList}>
+          <GridList cellHeight={180}>
               <Subheader>Albums</Subheader>
               {this.state.pictures.map((picture) => (
                   <GridTile title={picture.Label} subtitle={< span > < b > {

@@ -10,14 +10,34 @@
     width: 50em;
 }
 
+.Comments-box{
+    display: flex;
+    flex-direction: column;
+    max-height: 500px;
+}
+
 .container-with-comments {
     display: flex;
 }
 
-.Message-from-user {
-    box-shadow: 0px 0px 15px cyan;
+.Comments-List {
+    margin: 20px;
+    overflow-y: auto;
 }
 
-.Comment-box {
+.Comments-List span {
+    font-weight: bold;
+    color: cyan;
+}
+
+.Comment-send {
     margin: 30px;
+}
+
+.Message-from-user {
+    background-color: rgb(0, 188, 212);
+    color:white;
+    padding: 10px;
+    margin: 20px auto;
+    border-radius: 10px 10px;
 }

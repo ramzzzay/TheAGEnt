@@ -22,24 +22,6 @@ namespace TheAGEnt.Core
                 new { controller = "EditingInfo", action = "Index", id = UrlParameter.Optional }
             );
 
-            //routes.MapRoute(
-            //    "Settings",
-            //    "Settings/",
-            //    new {controller = "Home", action = "Index", id = UrlParameter.Optional}
-            //);
-
-            //routes.MapRoute(
-            //    "UserAlbums",
-            //    "{user}/",
-            //    new {controller = "Home", action = "Index", id = UrlParameter.Optional}
-            //);
-
-            //routes.MapRoute(
-            //    "UserPhotos",
-            //    "{user}/{userAlbumName}",
-            //    new {controller = "Home", action = "Index", id = UrlParameter.Optional}
-            //);
-
             routes.MapRoute(
                 "Default",
                 "{controller}/{action}/{id}",

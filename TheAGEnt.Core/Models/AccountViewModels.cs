@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace TheAGEnt.Core.Models
@@ -9,6 +10,7 @@ namespace TheAGEnt.Core.Models
         {
             public string Name { get; set; }
             public string Discription { get; set; }
+            public string PathToCover { get; set; }
         }
 
         public class PictureViewModel
@@ -23,6 +25,7 @@ namespace TheAGEnt.Core.Models
         {
             public string Message { get; set; }
             public string NickName { get; set; }
+            public DateTime PostingTime { get; set; }
         }
 
         public class CommentSendViewModel
