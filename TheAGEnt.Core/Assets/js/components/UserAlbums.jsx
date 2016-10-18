@@ -1,4 +1,4 @@
-import {GridList, GridTile} from 'material-ui/GridList';
+﻿import {GridList, GridTile} from 'material-ui/GridList';
 import Subheader from 'material-ui/Subheader';
 
 import FlatButton from 'material-ui/FlatButton';
@@ -23,7 +23,7 @@ module.exports = React.createClass({
     };
   },
   getAlbums: function() {
-    fetch(`api/Photos/GetUserAlbumsNameByNickName?nickname=${this.props.params.user}`, {
+    fetch(`api/Photos/GetUserAlbumsNameByNickNameAsync?nickname=${this.props.params.user}`, {
         method: 'GET',
         headers: new Headers({
             "Content-Type": "application/json",
@@ -50,4 +50,4 @@ module.exports = React.createClass({
       </div>
     );
   }
-});﻿
+}); 

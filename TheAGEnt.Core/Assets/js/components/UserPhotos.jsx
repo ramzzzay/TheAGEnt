@@ -19,7 +19,7 @@ const Full_Image = React.createClass({
         return {comments: [],message:""};
     },
     getComments: function() {
-        fetch(`/api/Photos/GetCommentsToPhotoById?nickname=${this.props.nicknameOfPhotoOwner}&albumName=${this.props.userAlbumName}&photoId=${this.props.imageId}`, {
+        fetch(`/api/Photos/GetCommentsToPhotoByIdAsync?nickname=${this.props.nicknameOfPhotoOwner}&albumName=${this.props.userAlbumName}&photoId=${this.props.imageId}`, {
             method: 'GET',
             headers: new Headers({
                 "Content-Type": "application/json",
@@ -103,7 +103,7 @@ module.exports = React.createClass({
     };
   },
   getPictures: function() {
-    fetch(`/api/Photos/GetUserPhotosByNickNameAndAlbumName?nickname=${this.props.params.user}&albumName=${this.props.params.userAlbumName}`, {
+    fetch(`/api/Photos/GetUserPhotosByNickNameAndAlbumNameAsync?nickname=${this.props.params.user}&albumName=${this.props.params.userAlbumName}`, {
         method: 'GET',
         headers: new Headers({
             "Content-Type": "application/json",
