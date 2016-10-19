@@ -23,7 +23,7 @@ module.exports = React.createClass({
     };
   },
   getAlbums: function() {
-    fetch(`api/Photos/GetUserAlbumsNameByNickNameAsync?nickname=${this.props.params.user}`, {
+    fetch(`api/Photos/GetUserAlbumsNameByNickName?nickname=${this.props.params.user}`, {
         method: 'GET',
         headers: new Headers({
             "Content-Type": "application/json",

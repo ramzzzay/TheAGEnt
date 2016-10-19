@@ -73,6 +73,11 @@ namespace TheAGEnt.Infrastructure.Infrastructure
             return await _applicationUserManager.FindByIdAsync(id);
         }
 
+        public async Task<User> FindByNickNameAsync(string nickname)
+        {
+            return await _applicationUserManager.Users.FirstOrDefaultAsync(u => u.NickName == nickname);
+        }
+
         public async Task<IdentityResult> AddPasswordAsync(string userId, string newPassword)
         {
             return await _applicationUserManager.AddPasswordAsync(userId, newPassword);

@@ -81,6 +81,11 @@ namespace TheAGEnt.Infrastructure.Infrastructure
             return response >= 1 ? new IdentityResult("OK") : new IdentityResult("Error");
         }
 
+        public async Task<User> FindByNickNameAsync(string nickname)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.NickName == nickname);
+        }
+
         public async Task<IdentityResult> ImageUploadAsync(string userId, string filePath, string email, string album)
         {
             var user = _context.Users.Single(u => u.Id == userId);

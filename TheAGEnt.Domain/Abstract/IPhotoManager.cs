@@ -21,5 +21,7 @@ namespace TheAGEnt.Domain.Abstract
 
         Task<IdentityResult> SetGradesAsync(string nickNameOfSender, string photoOwner, string albumName, int photoId,
             int grade);
+
+        Task<User> FindByNickNameAsync(string nickname);
     }
 }

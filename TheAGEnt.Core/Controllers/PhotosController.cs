@@ -18,14 +18,17 @@ namespace TheAGEnt.Core.Controllers
     public class PhotosController : ApiController
     {
         private readonly IPhotoManager _photoManager;
+        private readonly IMainUserManager _userManager;
 
-        public PhotosController()
+        public PhotosController(IMainUserManager userManager)
         {
+            _userManager = userManager;
         }
 
-        public PhotosController(IPhotoManager photoManager)
+        public PhotosController(IPhotoManager photoManager, IMainUserManager userManager)
         {
             _photoManager = photoManager;
+            _userManager = userManager;
         }
 
         // GET api/Photos/GetUserAlbumsById
@@ -149,8 +152,26 @@ namespace TheAGEnt.Core.Controllers
         [Route("GetGrades")]
         [HttpGet]
         [AllowAnonymous]
-        public async Task<int> GetGrades(string photoOwner,string albumName,int photoId) => await
-            _photoManager.GetGradesAverageAsync(photoOwner, albumName, photoId);
+        public async Task<int> GetGrades(string photoOwner, string albumName, int photoId)
+        {
+            return await
+                _photoManager.GetGradesAverageAsync(photoOwner, albumName, photoId);
+        }
+
+        // GET api/Photos/GradedCheck
+        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
+        [Route("GradedCheck")]
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<bool?> GradedCheck(string photoOwnerNickname, string nickname, string albumName, int photoId)
+        {
+            //var photoUser = await _photoManager.FindByNickNameAsync(nickname);
+            var user = await _userManager.FindByNickNameAsync(nickname);
+            var photos = await _photoManager.GetUserPhotosByNickNameAndAlbumNameAsync(photoOwnerNickname, albumName);
+            var picture = await Task.Run(() => photos.FirstOrDefault(p => p.Id == photoId));
+            var flag = user.Grades.FirstOrDefault(ug => ug.Picture.Id == picture.Id)?.Graded;
+            return flag;
+        }
 
         // POST api/Photos/SetGradesAsync
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
@@ -159,7 +180,7 @@ namespace TheAGEnt.Core.Controllers
         [AllowAnonymous]
         public async Task<IdentityResult> SetGradesAsync(GradesViewModel grade)
         {
-            return await _photoManager.SetGradesAsync(grade.NickNameOfSender, grade.photoOwner, grade.AlbumName, grade.PhotoId,
+            return await _photoManager.SetGradesAsync(grade.NickNameOfSender, grade.PhotoOwner, grade.AlbumName, grade.PhotoId,
                 grade.NumberOfGrade);
         }
     }

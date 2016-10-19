@@ -35,7 +35,7 @@ namespace TheAGEnt.Core.Models
     public class GradesViewModel
     {
         public string NickNameOfSender { get; set; }
-        public string photoOwner { get; set; }
+        public string PhotoOwner { get; set; }
         public string AlbumName { get; set; }
         public int PhotoId { get; set; }
         public int NumberOfGrade { get; set; }

@@ -17,6 +17,7 @@ namespace TheAGEnt.Domain.Abstract
         Task<ClaimsIdentity> CreateIdentityAsync(User user, string authenticationType);
         Task<User> FindByIdAsync(string userId);
         Task<User> FindByEmailAsync(string email);
+        Task<User> FindByNickNameAsync(string nickname);
         Task<IdentityResult> AddPasswordAsync(string userId, string newPassword);
         Task<IdentityResult> AddLoginAsync(string userId, UserLoginInfo userInfo);
         Task<IdentityResult> RemovePasswordAsync(string userId);
