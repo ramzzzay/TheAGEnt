@@ -58,7 +58,7 @@ namespace TheAGEnt.Core.Controllers
             if (updatedUser.Address != null)
                 user.Address = updatedUser.Address;
             var response = await UserManager.UpdateAsync(user);
-            return response.Succeeded ? (ActionResult) RedirectToRoute("Settings") : View(updatedUser);
+            return response.Succeeded ? (ActionResult) RedirectToRoute("Default") : View(updatedUser);
         }
     }
 }
