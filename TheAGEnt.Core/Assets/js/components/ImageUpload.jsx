@@ -5,7 +5,7 @@ module.exports = React.createClass({
     propTypes: {
         test: React.PropTypes.string.isRequired
     },
-    getInitialState: function() {
+    getInitialState: function () {
         return {
             componentConfig: {
                 postUrl: this.props.url
@@ -13,20 +13,21 @@ module.exports = React.createClass({
             djsConfig: {
                 addRemoveLinks: true,
                 headers: {
-                    'Authorization': "bearer " + Cookie.load('tokenInfo')
+                    "Authorization": "bearer " + Cookie.load("tokenInfo")
                 }
             },
             eventHandlers: {
-                success: (file,response) => this.props.changeState(response.uploadedUrl)
+                success: (file, response) => this.props.changeState(response.uploadedUrl)
             }
         };
     },
-    render: function() {
+    render: function () {
         return (
             <div>
-              <h3>Uploading {this.props.name || "image"}</h3>
-                <DropzoneComponent config={this.state.componentConfig} eventHandlers={this.state.eventHandlers} djsConfig={this.state.djsConfig}/>
+                <h3>Uploading {this.props.name || "image"}</h3>
+                <DropzoneComponent config={this.state.componentConfig} eventHandlers={this.state.eventHandlers}
+                                   djsConfig={this.state.djsConfig}/>
             </div>
         );
     }
-  });
+});

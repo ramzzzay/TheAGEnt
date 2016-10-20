@@ -1,42 +1,44 @@
-﻿import {GridList, GridTile} from 'material-ui/GridList';
-import Subheader from 'material-ui/Subheader';
-
-import Dialog from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
-
-import IconButton from 'material-ui/IconButton';
-import {cyan700} from 'material-ui/styles/colors';
-import SendIcon from 'material-ui/svg-icons/content/send';
-
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
-import ActionFavorite from 'material-ui/svg-icons/action/stars';
-import ActionFavoriteBorder from 'material-ui/svg-icons/action/favorite-border';
+﻿import {GridList, GridTile} from "material-ui/GridList";
+import Subheader from "material-ui/Subheader";
+import Dialog from "material-ui/Dialog";
+import TextField from "material-ui/TextField";
+import IconButton from "material-ui/IconButton";
+import {cyan700} from "material-ui/styles/colors";
+import SendIcon from "material-ui/svg-icons/content/send";
+import {RadioButton, RadioButtonGroup} from "material-ui/RadioButton";
+import ActionFavorite from "material-ui/svg-icons/action/stars";
+import ActionFavoriteBorder from "material-ui/svg-icons/action/favorite-border";
 
 const customContentStyle = {
     dialog: {
-        display: 'flex',
-        maxWidth: 'auto'
+        display: "flex",
+        maxWidth: "auto"
     }
 };
 
 const styles = {
     root: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-around'
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "space-around"
     },
     st: {
-        display: 'flex'
+        display: "flex"
     },
     ar: {
-        display: 'flex',
-        flexDirection: 'row'
+        display: "flex",
+        flexDirection: "row"
     }
 };
 
 const Full_Image = React.createClass({
     getInitialState: function () {
-        return {comments: [], message: "", graded: false,grade:0};
+        return {
+            comments: [],
+            message: "",
+            graded: false,
+            grade: 0
+        };
     },
     starsComponents: function () {
         var arr = [];
@@ -50,22 +52,28 @@ const Full_Image = React.createClass({
                 style={styles.radioButton}
             />)
         }
-        return(<RadioButtonGroup onChange={this.sendGrade} style={styles.ar} name="stars">{arr}</RadioButtonGroup>);
+        return (
+            <RadioButtonGroup onChange={this.sendGrade} style={styles.ar} name="stars">
+                {arr}
+            </RadioButtonGroup>
+        );
     },
     getComments: function () {
         fetch(`/api/Photos/GetCommentsToPhotoById?nickname=${this.props.nicknameOfPhotoOwner}&albumName=${this.props.userAlbumName}&photoId=${this.props.imageId}`, {
-            method: 'GET',
+            method: "GET",
             headers: new Headers({
                 "Content-Type": "application/json",
-                "Authorization": "bearer " + Cookie.load('tokenInfo')
+                "Authorization": "bearer " + Cookie.load("tokenInfo")
             })
-        }).then(r => r.json()).then(c => this.setState({comments: Array.from(c)}));
+        })
+            .then(r => r.json())
+            .then(c => this.setState({comments: Array.from(c)}));
     },
     cleanForm: function () {
         this.setState({message: ""});
     },
-    sendGrade: function (event,value) {
-      console.log("log from grades",event,value);
+    sendGrade: function (event, value) {
+        console.log("log from grades", event, value);
         var data = {
             PhotoOwner: this.props.nicknameOfPhotoOwner,
             NickNameOfSender: this.props.nickNameOfSender,
@@ -75,10 +83,10 @@ const Full_Image = React.createClass({
             Graded: true
         };
         fetch("/api/Photos/SetGradesAsync", {
-            method: 'POST',
+            method: "POST",
             headers: new Headers({
                 "Content-Type": "application/json",
-                "Authorization": "bearer " + Cookie.load('tokenInfo')
+                "Authorization": "bearer " + Cookie.load("tokenInfo")
             }),
             body: JSON.stringify(data)
         }).then(()=> {
@@ -89,12 +97,14 @@ const Full_Image = React.createClass({
     },
     currentGrade: function () {
         fetch(`/api/Photos/GetGrades?photoOwner=${this.props.nicknameOfPhotoOwner}&albumName=${this.props.userAlbumName}&photoId=${this.props.imageId}`, {
-            method: 'GET',
+            method: "GET",
             headers: new Headers({
                 "Content-Type": "application/json",
-                "Authorization": "bearer " + Cookie.load('tokenInfo')
+                "Authorization": "bearer " + Cookie.load("tokenInfo")
             })
-        }).then(r => r.json()).then(g => this.setState({grade: g}));
+        })
+            .then(r => r.json())
+            .then(g => this.setState({grade: g}));
     },
     sendMessage: function () {
         var data = {
@@ -105,10 +115,10 @@ const Full_Image = React.createClass({
             Message: this.state.message
         };
         fetch("/api/Photos/SendComment", {
-            method: 'POST',
+            method: "POST",
             headers: new Headers({
                 "Content-Type": "application/json",
-                "Authorization": "bearer " + Cookie.load('tokenInfo')
+                "Authorization": "bearer " + Cookie.load("tokenInfo")
             }),
             body: JSON.stringify(data)
         }).then(()=> {
@@ -121,12 +131,14 @@ const Full_Image = React.createClass({
     },
     gradedStatus: function () {
         fetch(`/api/Photos/GradedCheck?photoOwnerNickname=${this.props.nicknameOfPhotoOwner}&nickname=${this.props.nickNameOfSender}&albumName=${this.props.userAlbumName}&photoId=${this.props.imageId}`, {
-            method: 'GET',
+            method: "GET",
             headers: new Headers({
                 "Content-Type": "application/json",
-                "Authorization": "bearer " + Cookie.load('tokenInfo')
+                "Authorization": "bearer " + Cookie.load("tokenInfo")
             })
-        }).then(r => r.json()).then(g => this.setState({graded: g}));
+        })
+            .then(r => r.json())
+            .then(g => this.setState({graded: g}));
     },
     componentDidMount: function () {
         this.getComments();
@@ -168,7 +180,6 @@ const Full_Image = React.createClass({
 });
 
 
-
 module.exports = React.createClass({
     getInitialState: function () {
         return {
@@ -180,10 +191,10 @@ module.exports = React.createClass({
     },
     getPictures: function () {
         fetch(`/api/Photos/GetUserPhotosByNickNameAndAlbumName?nickname=${this.props.params.user}&albumName=${this.props.params.userAlbumName}`, {
-            method: 'GET',
+            method: "GET",
             headers: new Headers({
                 "Content-Type": "application/json",
-                "Authorization": "bearer " + Cookie.load('tokenInfo')
+                "Authorization": "bearer " + Cookie.load("tokenInfo")
             })
         }).then(r => r.json()).then(a => this.setState({pictures: Array.from(a)}));
     },
@@ -201,12 +212,12 @@ module.exports = React.createClass({
         this.getPictures();
     },
     fullImage: function () {
-        return(
+        return (
             <Full_Image userAlbumName={this.props.params.userAlbumName}
-                           nicknameOfPhotoOwner={this.props.params.user} nickNameOfSender={Cookie.load('nickname')}
-                           imageId={this.state.ClickedImageId} imageUrl={this.state.PathToClickedImage}
-                           title="Full information" modal={false} open={this.state.openWall}
-                           onRequestClose={this.handleCloseWall}/>
+                        nicknameOfPhotoOwner={this.props.params.user} nickNameOfSender={Cookie.load("nickname")}
+                        imageId={this.state.ClickedImageId} imageUrl={this.state.PathToClickedImage}
+                        title="Full information" modal={false} open={this.state.openWall}
+                        onRequestClose={this.handleCloseWall}/>
         )
     },
     render: function () {

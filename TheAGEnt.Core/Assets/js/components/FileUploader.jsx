@@ -1,8 +1,9 @@
 module.exports = React.createClass({
-  getInitialState: function() {
-    return {
-      file: ""
-    };
-  },
+    getInitialState: function () {
+        return {
+            file: ""
+        };
+    },
 
-});﻿
+});
+﻿
