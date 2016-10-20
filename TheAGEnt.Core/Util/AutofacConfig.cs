@@ -31,8 +31,7 @@ namespace TheAGEnt.Core.Util
             //dependenses resolving
             builder.RegisterType<MainUserManager>().As<IMainUserManager>().InstancePerRequest();
             builder.RegisterType<PhotoManager>().As<IPhotoManager>().InstancePerRequest();
-            //builder.Register(c => new UserStore<User>(c.Resolve<TheAGEntContext>())).AsImplementedInterfaces().InstancePerRequest();
-            builder.RegisterType<UserStore<User>>().As<IUserStore<User>>().WithParameter("context", new TheAGEntContext());
+            builder.Register(c => new UserStore<User>(c.Resolve<TheAGEntContext>())).AsImplementedInterfaces().InstancePerRequest();
 
             builder.RegisterType<ApplicationUserManager>().AsSelf();
             builder.RegisterType<TheAGEntContext>().AsSelf();

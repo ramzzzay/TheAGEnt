@@ -61,6 +61,7 @@
     <Compile Include="Abstract\IPhotoManager.cs" />
     <Compile Include="Entities\Album.cs" />
     <Compile Include="Entities\Comment.cs" />
+    <Compile Include="Entities\Grade.cs" />
     <Compile Include="Entities\Picture.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

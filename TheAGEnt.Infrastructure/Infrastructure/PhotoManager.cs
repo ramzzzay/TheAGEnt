@@ -34,19 +34,19 @@ namespace TheAGEnt.Infrastructure.Infrastructure
         public async Task<List<Album>> GetUserAlbumsByEmail(string userEmail) => await _context.Users
             .Where(u => u.Email == userEmail)
             .SelectMany(u => u.Albums).ToListAsync();
-        public async Task<List<Album>> GetUserAlbumsNameByNickName(string nickname) => await _context.Users
+        public async Task<List<Album>> GetUserAlbumsNameByNickNameAsync(string nickname) => await _context.Users
             .Where(u => u.NickName == nickname)
             .SelectMany(u => u.Albums).ToListAsync();
-        public async Task<List<Picture>> GetUserPhotosByNickNameAndAlbumName(string nickname,string albumName) => await _context.Users
+        public async Task<List<Picture>> GetUserPhotosByNickNameAndAlbumNameAsync(string nickname,string albumName) => await _context.Users
             .Where(u=>u.NickName == nickname)
             .SelectMany(a=>a.Albums).Where(a=>a.Name == albumName).SelectMany(p=>p.Pictures).ToListAsync();
-        public async Task<List<Comment>> GetCommentsToPhotoById(string nickname, string albumName, int photoId) => await _context.Users
+        public async Task<List<Comment>> GetCommentsToPhotoByIdAsync(string nickname, string albumName, int photoId) => await _context.Users
             .Where(u => u.NickName == nickname)
             .SelectMany(a => a.Albums).Where(a => a.Name == albumName)
             .SelectMany(p => p.Pictures).Where(p=>p.Id == photoId)
             .SelectMany(c=>c.Comment).ToListAsync();
 
-        public async Task<IdentityResult> SendCommentsToPhotoById(string nickNameOfSender,string photoOwnerNickname, string albumName, int photoId,string message)
+        public async Task<IdentityResult> SendCommentsToPhotoByIdAsync(string nickNameOfSender,string photoOwnerNickname, string albumName, int photoId,string message)
         {
             var user = _context.Users.FirstOrDefault(x => x.NickName == nickNameOfSender);
             _context.Users.FirstOrDefault(x=>x.NickName == photoOwnerNickname)?.Albums.FirstOrDefault(a=>a.Name==albumName)?.Pictures.FirstOrDefault(p=>p.Id==photoId)?.Comment.Add(new Comment() {Message = message,UserId = user, PostingTime = DateTime.UtcNow});
@@ -54,7 +54,39 @@ namespace TheAGEnt.Infrastructure.Infrastructure
             return response >=1 ? new IdentityResult("OK") : new IdentityResult("Error");
         }
 
-        public async Task<IdentityResult> ImageUpload(string userId, string filePath, string email, string album)
+        public async Task<int> GetGradesAverageAsync(string photoOwner, string albumName, int photoId)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.NickName == photoOwner);
+            var album = user?.Albums.FirstOrDefault(a=>a.Name==albumName);
+            var photo = album?.Pictures.FirstOrDefault(p => p.Id == photoId);
+            var grades = photo?.Grades;
+            return grades.Select(g=>g.NumberOfGrade).Sum()/grades.Count;
+        }
+
+        public async Task<IdentityResult> SetGradesAsync(string nickNameOfSender, string photoOwner, string albumName, int photoId,
+            int grade)
+        {
+            var sender = await _context.Users.FirstOrDefaultAsync(x => x.NickName == nickNameOfSender);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.NickName == photoOwner);
+            var album = user?.Albums.FirstOrDefault(a => a.Name == albumName);
+            var photo = album?.Pictures.FirstOrDefault(p => p.Id == photoId);
+
+            var grObj = new Grade {NumberOfGrade = grade, Graded = true};
+
+            photo?.Grades.Add(grObj);
+            sender.Grades.Add(grObj);
+
+            var response = await _context.SaveChangesAsync();
+
+            return response >= 1 ? new IdentityResult("OK") : new IdentityResult("Error");
+        }
+
+        public async Task<User> FindByNickNameAsync(string nickname)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.NickName == nickname);
+        }
+
+        public async Task<IdentityResult> ImageUploadAsync(string userId, string filePath, string email, string album)
         {
             var user = _context.Users.Single(u => u.Id == userId);
 

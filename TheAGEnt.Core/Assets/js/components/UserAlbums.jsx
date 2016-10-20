@@ -1,4 +1,4 @@
-import {GridList, GridTile} from 'material-ui/GridList';
+﻿import {GridList, GridTile} from 'material-ui/GridList';
 import Subheader from 'material-ui/Subheader';
 
 import FlatButton from 'material-ui/FlatButton';
@@ -50,4 +50,4 @@ module.exports = React.createClass({
       </div>
     );
   }
-});﻿
+}); 

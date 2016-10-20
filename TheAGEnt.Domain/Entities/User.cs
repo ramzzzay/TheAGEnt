@@ -13,6 +13,7 @@ namespace TheAGEnt.Domain.Entities
         {
             Albums = new List<Album>();
             Comments = new List<Comment>();
+            Grades = new List<Grade>();
         }
         public string Password { get; set; }
         public string Name { get; set; }
@@ -23,6 +24,7 @@ namespace TheAGEnt.Domain.Entities
         public string PathToCard { get; set; }
         public virtual ICollection<Album> Albums { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Grade> Grades { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(IMainUserManager manager, string authenticationType)
         {

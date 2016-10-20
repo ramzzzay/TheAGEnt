@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using TheAGEnt.Domain.Entities;
+
 namespace TheAGEnt.Infrastructure.Migrations
 {
     using System;
@@ -14,6 +17,9 @@ namespace TheAGEnt.Infrastructure.Migrations
 
         protected override void Seed(TheAGEnt.Infrastructure.Concrete.TheAGEntContext context)
         {
+            //var user = context.Users.First(u=>u.NickName == "RAMZAY");
+            //user.Grades = new List<Grade>();
+            //context.SaveChanges();
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 

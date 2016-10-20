@@ -156,7 +156,7 @@ module.exports = React.createClass({
                         }} onRequestClose={this.handleRequestClose} animation={PopoverAnimationVertical}>
                             <Menu>
                                 <MenuItem href="#Settings">Settings</MenuItem>
-                                <MenuItem href={`/EditingInfo?email=${this.state.nickName}`}>Edit info</MenuItem>
+                                <MenuItem href={`/EditingInfo?email=${this.state.LoggedUserName}`}>Edit info</MenuItem>
                                 <MenuItem primaryText="Log out" href="/" onTouchTap={this.handleLogOut}/>
                             </Menu>
                         </Popover>
