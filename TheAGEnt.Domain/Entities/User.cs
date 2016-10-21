@@ -28,7 +28,11 @@ namespace TheAGEnt.Domain.Entities
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(IMainUserManager manager, string authenticationType)
         {
-            var userIdentity = await manager.CreateIdentityAsync(this, authenticationType);
+            var userIdentity = await manager
+                .CreateIdentityAsync(
+                this,
+                authenticationType
+                );
             return userIdentity;
         }
     }

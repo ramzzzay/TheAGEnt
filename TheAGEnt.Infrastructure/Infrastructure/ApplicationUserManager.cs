@@ -27,11 +27,19 @@ namespace TheAGEnt.Infrastructure.Infrastructure
             };
 
             UserLockoutEnabledByDefault = false;
+
             DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(5);
             MaxFailedAccessAttemptsBeforeLockout = 5;
-            var dataProtectionProvider = new AesDataProtectorProvider(new Sha512CspFactory(), new Sha256CspFactory(),
-                new AesCspFactory());
-            UserTokenProvider = new DataProtectorTokenProvider<User>(dataProtectionProvider.Create("ASP.NET Identity"));
+
+            var dataProtectionProvider = new AesDataProtectorProvider(
+                new Sha512CspFactory(),
+                new Sha256CspFactory(),
+                new AesCspFactory()
+                );
+            UserTokenProvider = new DataProtectorTokenProvider<User>(
+                dataProtectionProvider
+                .Create("ASP.NET Identity")
+                );
         }
     }
 }

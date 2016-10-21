@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
+using TheAGEnt.Core;
 using TheAGEnt.Core.Util;
-using Swashbuckle.Application;
 
-[assembly: OwinStartup(typeof(TheAGEnt.Core.Startup))]
+[assembly: OwinStartup(typeof(Startup))]
 
 namespace TheAGEnt.Core
 {
@@ -23,16 +22,17 @@ namespace TheAGEnt.Core
 
             // Configure & enable the application for OAuth based flow
             PublicClientId = "self";
+
             app.UseOAuthBearerTokens(
                 OAuthOptions = new OAuthAuthorizationServerOptions
                 {
                     TokenEndpointPath = new PathString("/Token"),
                     Provider = new ApplicationOAuthProvider(PublicClientId),
-                    //AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
                     AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
                     // In production mode set AllowInsecureHttp = false
                     AllowInsecureHttp = true
                 });
+
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalBearer);
         }
     }

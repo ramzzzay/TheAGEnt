@@ -3,7 +3,6 @@ using System.Web;
 using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Owin;
-using Microsoft.AspNet.Identity;
 using TheAGEnt.Core.Models;
 using TheAGEnt.Domain.Abstract;
 using TheAGEnt.Domain.Entities;
@@ -16,7 +15,6 @@ namespace TheAGEnt.Core.Controllers
 
         public RegistrationController()
         {
-            
         }
 
         public RegistrationController(IMainUserManager userManager)
@@ -28,10 +26,14 @@ namespace TheAGEnt.Core.Controllers
         {
             get
             {
-                return _userManager ?? Request.GetOwinContext().GetAutofacLifetimeScope().Resolve<IMainUserManager>();
+                return _userManager ?? Request
+                    .GetOwinContext()
+                    .GetAutofacLifetimeScope()
+                    .Resolve<IMainUserManager>();
             }
             set { _userManager = value; }
         }
+
         // GET: UserManagement
         public ActionResult Index(RegisterBindingModel model)
         {
@@ -56,7 +58,8 @@ namespace TheAGEnt.Core.Controllers
             };
 
             var response = await UserManager.CreateAsync(user);
-            return response.Succeeded ? (ActionResult)RedirectToRoute("Default") : View(model);
+
+            return response.Succeeded ? (ActionResult) RedirectToRoute("Default") : View(model);
         }
     }
 }

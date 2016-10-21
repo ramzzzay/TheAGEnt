@@ -13,7 +13,9 @@ namespace TheAGEnt.Core.Util
             if (!actionContext.Request.Content.IsMimeMultipartContent())
                 throw new HttpResponseException(
                     new HttpResponseMessage(
-                        HttpStatusCode.UnsupportedMediaType)
+                        HttpStatusCode
+                        .UnsupportedMediaType
+                        )
                 );
         }
 

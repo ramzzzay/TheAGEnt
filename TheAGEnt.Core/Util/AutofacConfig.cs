@@ -23,20 +23,22 @@ namespace TheAGEnt.Core.Util
 
             builder.RegisterControllers(typeof(WebApiApplication).Assembly);
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+
             builder.RegisterType<AccountController>().InstancePerRequest();
             builder.RegisterType<PhotosController>().InstancePerRequest();
             builder.RegisterType<EditingInfoController>().InstancePerRequest();
             builder.RegisterType<RegistrationController>().InstancePerRequest();
-
-            //dependenses resolving
             builder.RegisterType<MainUserManager>().As<IMainUserManager>().InstancePerRequest();
             builder.RegisterType<PhotoManager>().As<IPhotoManager>().InstancePerRequest();
-            builder.Register(c => new UserStore<User>(c.Resolve<TheAGEntContext>())).AsImplementedInterfaces().InstancePerRequest();
-
             builder.RegisterType<ApplicationUserManager>().AsSelf();
             builder.RegisterType<TheAGEntContext>().AsSelf();
 
+            builder.Register(c => new UserStore<User>(c.Resolve<TheAGEntContext>())).AsImplementedInterfaces().InstancePerRequest();
+
+
+
             var container = builder.Build();
+
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
             GlobalConfiguration.Configuration.DependencyResolver = new AutofacWebApiDependencyResolver(container);
             app.UseAutofacWebApi(config);
@@ -47,28 +49,22 @@ namespace TheAGEnt.Core.Util
 
         public static void Configure()
         {
-            //Autofac configuration
             var builder = new ContainerBuilder();
-            // Get your HttpConfiguration.
             var config = GlobalConfiguration.Configuration;
 
             builder.RegisterControllers(typeof(WebApiApplication).Assembly);
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+
             builder.RegisterType<AccountController>().InstancePerRequest();
             builder.RegisterType<PhotosController>().InstancePerRequest();
             builder.RegisterType<EditingInfoController>().InstancePerRequest();
             builder.RegisterType<RegistrationController>().InstancePerRequest();
-
-            //dependenses resolving
             builder.RegisterType<MainUserManager>().As<IMainUserManager>().InstancePerRequest();
             builder.RegisterType<PhotoManager>().As<IPhotoManager>().InstancePerRequest();
             builder.RegisterType<UserStore<User>>().As<IUserStore<User>>().WithParameter("context", new TheAGEntContext());
-
-
             builder.RegisterType<ApplicationUserManager>().AsSelf();
             builder.RegisterType<TheAGEntContext>().AsSelf();
 
-            // Set the dependency resolver to be Autofac.
             var container = builder.Build();
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
         }

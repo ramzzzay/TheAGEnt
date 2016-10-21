@@ -35,19 +35,19 @@ namespace TheAGEnt.Core.Controllers
             ISecureDataFormat<AuthenticationTicket> accessTokenFormat)
         {
             UserManager = userManager;
-            AccessTokenFormat = accessTokenFormat;
         }
 
         private IMainUserManager UserManager
         {
             get
             {
-                return _userManager ?? Request.GetOwinContext().GetAutofacLifetimeScope().Resolve<IMainUserManager>();
+                return _userManager ?? Request
+                    .GetOwinContext()
+                    .GetAutofacLifetimeScope()
+                    .Resolve<IMainUserManager>();
             }
             set { _userManager = value; }
         }
-
-        private ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; }
 
         // GET api/Account/UserInfo
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
@@ -72,6 +72,7 @@ namespace TheAGEnt.Core.Controllers
         public async Task<PersonalUserInfoViewModel> GetAllUserInfo()
         {
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+
             var viewUser = new PersonalUserInfoViewModel
             {
                 Email = user.Email,
@@ -82,6 +83,7 @@ namespace TheAGEnt.Core.Controllers
                 PathToPhoto = user.PathToPhoto,
                 PathToCard = user.PathToCard
             };
+
             return viewUser;
         }
 
@@ -94,6 +96,7 @@ namespace TheAGEnt.Core.Controllers
         public IQueryable SearchUsers(string searchData)
         {
             var users = UserManager.FindByName(searchData);
+
             var viewsUser = users.Select(user => new
             {
                 user.Email,
@@ -113,7 +116,8 @@ namespace TheAGEnt.Core.Controllers
         public async Task<IEnumerable<MiniUserInfoViewModer>> GetAllUsersMiniInfo()
         {
             var users = await UserManager.GetAllUsersAsync();
-            var viewsUser = users.Select(user => new MiniUserInfoViewModer()
+
+            var viewsUser = users.Select(user => new MiniUserInfoViewModer
             {
                 Email = user.Email,
                 Name = user.Name,
@@ -132,7 +136,9 @@ namespace TheAGEnt.Core.Controllers
         public async Task<IHttpActionResult> UpdateUserInfo(PersonalUserInfoViewModel updatedUser)
         {
             if (!ModelState.IsValid) return BadRequest("Wrong model");
+
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+
             if (updatedUser.Name != "")
                 user.Name = updatedUser.Name;
             if (updatedUser.Surname != "")
@@ -141,7 +147,9 @@ namespace TheAGEnt.Core.Controllers
                 user.NickName = updatedUser.NickName;
             if (updatedUser.Address != "")
                 user.Address = updatedUser.Address;
+
             var response = await UserManager.UpdateAsync(user);
+
             return response.Succeeded
                 ? Ok(new {Msg = response.Errors, IsOk = response.Succeeded})
                 : GetErrorResult(response);
@@ -154,7 +162,9 @@ namespace TheAGEnt.Core.Controllers
         public async Task<IHttpActionResult> UpdateUserInfoByAdmin(PersonalUserInfoViewModel updatedUser)
         {
             if (!ModelState.IsValid) return BadRequest("Wrong model");
+
             var user = await UserManager.FindByEmailAsync(updatedUser.Email);
+
             if (updatedUser.Email != "")
                 user.Email = updatedUser.Email;
             if (updatedUser.Name != "")
@@ -165,7 +175,9 @@ namespace TheAGEnt.Core.Controllers
                 user.NickName = updatedUser.NickName;
             if (updatedUser.Address != "")
                 user.Address = updatedUser.Address;
+
             var response = await UserManager.UpdateAsync(user);
+
             return response.Succeeded
                 ? Ok(new {Msg = response.Errors, IsOk = response.Succeeded})
                 : GetErrorResult(response);
@@ -194,6 +206,7 @@ namespace TheAGEnt.Core.Controllers
             user.PathToPhoto = $"/Assets/imgs/ProfileImages/Avatars/{fileName}";
 
             var response = await UserManager.UpdateAsync(user);
+
             return response.Succeeded
                 ? Ok(new {Msg = response.Errors, IsOk = response.Succeeded, uploadedUrl = user.PathToPhoto})
                 : GetErrorResult(response);
@@ -221,6 +234,7 @@ namespace TheAGEnt.Core.Controllers
             user.PathToCard = $"/Assets/imgs/ProfileImages/Cards/{fileName}";
 
             var response = await UserManager.UpdateAsync(user);
+
             return response.Succeeded
                 ? Ok(new {Msg = response.Errors, IsOk = response.Succeeded, uploadedUrl = user.PathToCard})
                 : GetErrorResult(response);
@@ -296,7 +310,9 @@ namespace TheAGEnt.Core.Controllers
         public async Task<IHttpActionResult> AddClaim(ClaimAddModel c)
         {
             if (!ModelState.IsValid) return BadRequest("Something frong with adding claim to user!");
+
             var response = await UserManager.AddClaimToUserAsync(c.Email, c.NameOfClaim);
+
             return Ok(new {Msg = response.Errors, IsOk = response.Succeeded});
         }
 
@@ -322,26 +338,6 @@ namespace TheAGEnt.Core.Controllers
 
             var result = await UserManager.CreateAsync(user);
 
-            //if (!result.Succeeded) return GetErrorResult(result);
-            //var client = new SmtpClient("smtp.gmail.com", 587)
-            //{
-            //    EnableSsl = true,
-            //    Timeout = 10000,
-            //    DeliveryMethod = SmtpDeliveryMethod.Network,
-            //    UseDefaultCredentials = false,
-            //    Credentials = new NetworkCredential("phonebooksender@gmail.com", "Qw12345678*")
-            //};
-
-            //var email = Email
-            //    .From("phonebooksender@gmail.com")
-            //    .To(user.Email)
-            //    .Subject("Email confirmation")
-            //    .Body(string.Format("For complete the registration, please go to link:" +
-            //                        "<a href=\"{0}\" title=\"Accept\">{0}</a>",
-            //        $"http://localhost/api/Account/ConfirmEmail?token={user.Email}"))
-            //    .UsingClient(client);
-            //email.Send();
-
             return Ok(new {Msg = result.Errors, IsOk = result.Succeeded});
         }
 
@@ -350,9 +346,13 @@ namespace TheAGEnt.Core.Controllers
         public async Task<IHttpActionResult> ConfirmEmail(string token)
         {
             var user = await UserManager.FindByEmailAsync(token);
+
             if (user == null) return BadRequest("Bad Token");
+
             user.EmailConfirmed = true;
+
             await UserManager.UpdateAsync(user);
+
             return Ok();
         }
 
@@ -400,19 +400,16 @@ namespace TheAGEnt.Core.Controllers
             if (result == null)
                 return InternalServerError();
 
-            if (!result.Succeeded)
-            {
-                if (result.Errors != null)
-                    foreach (var error in result.Errors)
-                        ModelState.AddModelError("", error);
+            if (result.Succeeded) return null;
 
-                if (ModelState.IsValid)
-                    return BadRequest();
+            if (result.Errors != null)
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("", error);
 
-                return BadRequest(ModelState);
-            }
+            if (ModelState.IsValid)
+                return BadRequest();
 
-            return null;
+            return BadRequest(ModelState);
         }
 
         private class ExternalLoginData
@@ -465,7 +462,9 @@ namespace TheAGEnt.Core.Controllers
                 var strengthInBytes = strengthInBits/bitsPerByte;
 
                 var data = new byte[strengthInBytes];
+
                 Random.GetBytes(data);
+
                 return HttpServerUtility.UrlTokenEncode(data);
             }
         }

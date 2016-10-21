@@ -33,11 +33,21 @@ namespace TheAGEnt.Infrastructure.Infrastructure
                 Surname = u.Surname,
                 Address = u.Address
             };
+
             var result = await _applicationUserManager.CreateAsync(user, u.Password);
+
             if (!result.Succeeded) return result;
-            var identityClaim = new IdentityUserClaim {ClaimType = ClaimTypes.Role, ClaimValue = "user"};
+
+            var identityClaim = new IdentityUserClaim
+            {
+                ClaimType = ClaimTypes.Role,
+                ClaimValue = "user"
+            };
             user.Claims.Add(identityClaim);
-            result = await _applicationUserManager.UpdateAsync(user);
+
+            result = await _applicationUserManager
+                .UpdateAsync(user);
+
             return result;
         }
 
@@ -49,81 +59,108 @@ namespace TheAGEnt.Infrastructure.Infrastructure
         public async Task<User> FindAsync(string email, string password)
         {
             var user = await _applicationUserManager.FindByEmailAsync(email);
+
             var check = await _applicationUserManager.CheckPasswordAsync(user, password);
+
             return check ? user : null;
         }
 
         public async Task<User> FindAsync(UserLoginInfo userLoginInfo)
         {
-            return await _applicationUserManager.FindAsync(userLoginInfo);
+            return await _applicationUserManager
+                .FindAsync(userLoginInfo);
         }
 
-        public IQueryable<User> FindByName(string Name)
+        public IQueryable<User> FindByName(string name)
         {
-            return _applicationUserManager.Users.Where(u => u.Name.Contains(Name)).Select(u => u);
+            return _applicationUserManager
+                .Users
+                .Where(u => u.Name.Contains(name))
+                .Select(u => u);
         }
 
         public async Task<ClaimsIdentity> CreateIdentityAsync(User user, string authenticationType)
         {
-            return await _applicationUserManager.CreateIdentityAsync(user, authenticationType);
+            return await _applicationUserManager
+                .CreateIdentityAsync(user,authenticationType);
         }
 
         public async Task<User> FindByIdAsync(string id)
         {
-            return await _applicationUserManager.FindByIdAsync(id);
+            return await _applicationUserManager
+                .FindByIdAsync(id);
         }
 
         public async Task<User> FindByNickNameAsync(string nickname)
         {
-            return await _applicationUserManager.Users.FirstOrDefaultAsync(u => u.NickName == nickname);
+            return await _applicationUserManager
+                .Users
+                .FirstOrDefaultAsync(u => u.NickName == nickname);
         }
 
         public async Task<IdentityResult> AddPasswordAsync(string userId, string newPassword)
         {
-            return await _applicationUserManager.AddPasswordAsync(userId, newPassword);
+            return await _applicationUserManager
+                .AddPasswordAsync(userId, newPassword);
         }
 
         public async Task<IdentityResult> AddLoginAsync(string userId, UserLoginInfo userInfo)
         {
-            return await _applicationUserManager.AddLoginAsync(userId, userInfo);
+            return await _applicationUserManager
+                .AddLoginAsync(userId, userInfo);
         }
 
         public async Task<IdentityResult> RemovePasswordAsync(string userId)
         {
-            return await _applicationUserManager.RemovePasswordAsync(userId);
+            return await _applicationUserManager
+                .RemovePasswordAsync(userId);
         }
 
         public async Task<IdentityResult> RemoveLoginAsync(string userId, UserLoginInfo userInfo)
         {
-            return await _applicationUserManager.RemoveLoginAsync(userId, userInfo);
+            return await _applicationUserManager
+                .RemoveLoginAsync(userId, userInfo);
         }
 
         public async Task<List<User>> GetAllUsersAsync()
         {
-            return await _applicationUserManager.Users.ToListAsync();
+            return await _applicationUserManager
+                .Users.ToListAsync();
         }
 
         public async Task<IdentityResult> AddClaimToUserAsync(string email, string claimName)
         {
-            var user = await _applicationUserManager.FindByEmailAsync(email);
-            return await _applicationUserManager.AddClaimAsync(user.Id, new Claim(ClaimTypes.Role, claimName));
+            var user = await _applicationUserManager
+                .FindByEmailAsync(email);
+
+            return await _applicationUserManager
+                .AddClaimAsync(
+                user.Id,
+                new Claim(ClaimTypes.Role, claimName)
+                );
         }
 
         public async Task<User> FindByEmailAsync(string email)
         {
-            return await _applicationUserManager.FindByEmailAsync(email);
+            return await _applicationUserManager
+                .FindByEmailAsync(email);
         }
 
         public async Task<IdentityResult> ChangePasswordAsync(string id, string currentPassword, string newPassword)
         {
             return await
                 _applicationUserManager.ChangePasswordAsync(
-                    _applicationUserManager.FindById(id).Id, currentPassword, newPassword);
+                    _applicationUserManager
+                    .FindById(id)
+                    .Id,
+                    currentPassword,
+                    newPassword);
         }
 
         public void Dispose()
         {
-            _applicationUserManager.Dispose();
+            _applicationUserManager
+                .Dispose();
         }
     }
 }

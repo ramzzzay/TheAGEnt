@@ -34,6 +34,7 @@ namespace TheAGEnt.Core.Controllers
         public async Task<ActionResult> Index(string email)
         {
             var user = await UserManager.FindByEmailAsync(email);
+
             var viewUser = new PersonalUserInfoViewModel
             {
                 Email = user.Email,
@@ -42,13 +43,16 @@ namespace TheAGEnt.Core.Controllers
                 NickName = user.NickName,
                 Address = user.Address
             };
+
             return View(viewUser);
         }
 
         public async Task<ActionResult> Edited(PersonalUserInfoViewModel updatedUser)
         {
             if (!ModelState.IsValid) return View();
+
             var user = await UserManager.FindByEmailAsync(updatedUser.Email);
+
             if (updatedUser.Name != null)
                 user.Name = updatedUser.Name;
             if (updatedUser.Surname != null)
@@ -57,7 +61,9 @@ namespace TheAGEnt.Core.Controllers
                 user.NickName = updatedUser.NickName;
             if (updatedUser.Address != null)
                 user.Address = updatedUser.Address;
+
             var response = await UserManager.UpdateAsync(user);
+
             return response.Succeeded ? (ActionResult) RedirectToRoute("Default") : View(updatedUser);
         }
     }

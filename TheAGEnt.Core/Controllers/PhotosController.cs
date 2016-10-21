@@ -37,7 +37,8 @@ namespace TheAGEnt.Core.Controllers
         [HttpGet]
         [Authorize(Roles = "user")]
         public async Task<List<Album>> GetCurrentUserAlbums()
-            => await _photoManager.GetUserAlbumsById(User.Identity.GetUserId());
+            => await _photoManager
+            .GetUserAlbumsById(User.Identity.GetUserId());
 
         // GET api/Photos/GetUserAlbumsNameById
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
@@ -45,7 +46,8 @@ namespace TheAGEnt.Core.Controllers
         [HttpGet]
         [AllowAnonymous]
         public IQueryable<string> GetUserAlbumsNameById()
-            => _photoManager.GetUserAlbumsNameById(User.Identity.GetUserId());
+            => _photoManager
+            .GetUserAlbumsNameById(User.Identity.GetUserId());
 
         // GET api/Photos/GetUserAlbumsNameByNickNameAsync
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
@@ -55,12 +57,14 @@ namespace TheAGEnt.Core.Controllers
         public async Task<IEnumerable<AlbumViewModel>> GetUserAlbumsNameByNickName(string nickname)
         {
             var albums = await _photoManager.GetUserAlbumsNameByNickNameAsync(nickname);
+
             var response = albums.Select(a => new AlbumViewModel
             {
                 Name = a.Name,
                 Discription = a.Discription,
                 PathToCover = a.PathToCover
             });
+
             return response;
         }
 
@@ -72,6 +76,7 @@ namespace TheAGEnt.Core.Controllers
         public async Task<IEnumerable<PictureViewModel>> GetUserPhotosByNickName(string nickname, string albumName)
         {
             var pictures = await _photoManager.GetUserPhotosByNickNameAndAlbumNameAsync(nickname, albumName);
+
             var response = pictures.Select(p => new PictureViewModel
             {
                 Id = p.Id,
@@ -79,6 +84,7 @@ namespace TheAGEnt.Core.Controllers
                 Discription = p.Discription,
                 PathToImage = p.PathToImage
             });
+
             return response;
         }
 
@@ -109,7 +115,10 @@ namespace TheAGEnt.Core.Controllers
         [Authorize(Roles = "user")]
         public async Task<IHttpActionResult> SendComment(CommentSendViewModel comment)
             => Ok(await _photoManager.SendCommentsToPhotoByIdAsync
-            (comment.NickNameOfSender, comment.NickNameOfPhotoOwner, comment.AlbumName, comment.PhotoId,
+            (comment.NickNameOfSender,
+                comment.NickNameOfPhotoOwner,
+                comment.AlbumName,
+                comment.PhotoId,
                 comment.Message));
 
         // GET api/Photos/GetAnyUserAlbums
@@ -118,7 +127,8 @@ namespace TheAGEnt.Core.Controllers
         [HttpGet]
         [AllowAnonymous]
         public async Task<List<Album>> GetAnyUserAlbums(string userEmail)
-            => await _photoManager.GetUserAlbumsByEmail(userEmail);
+            => await _photoManager
+            .GetUserAlbumsByEmail(userEmail);
 
         [Route("UploadUserImage")]
         // POST api/Photos/UploadUserImage
@@ -137,14 +147,28 @@ namespace TheAGEnt.Core.Controllers
                 .FileData.Select(multiPartData => multiPartData.LocalFileName).FirstOrDefault();
 
             var userId = User.Identity.GetUserId();
+
             var fileName = Path.GetFileName(localFileName);
+
             var email = multipartFormDataStreamProvider.FormData["email"];
             var album = multipartFormDataStreamProvider.FormData["album"];
 
             var response =
-                await _photoManager.ImageUploadAsync(userId, $"/Assets/imgs/ProfileImages/Images/{fileName}", email, album);
+                await
+                    _photoManager
+                    .ImageUploadAsync(
+                        userId,
+                        $"/Assets/imgs/ProfileImages/Images/{fileName}",
+                        email,
+                        album
+                        );
 
-            return Ok(new {Msg = response.Errors, IsOk = response.Succeeded});
+            return Ok(
+                new
+                {
+                    Msg = response.Errors,
+                    IsOk = response.Succeeded
+                });
         }
 
         // GET api/Photos/GetGrades
@@ -155,7 +179,12 @@ namespace TheAGEnt.Core.Controllers
         public async Task<int> GetGrades(string photoOwner, string albumName, int photoId)
         {
             return await
-                _photoManager.GetGradesAverageAsync(photoOwner, albumName, photoId);
+                _photoManager
+                .GetGradesAverageAsync(
+                    photoOwner,
+                    albumName,
+                    photoId
+                    );
         }
 
         // GET api/Photos/GradedCheck
@@ -165,11 +194,24 @@ namespace TheAGEnt.Core.Controllers
         [AllowAnonymous]
         public async Task<bool?> GradedCheck(string photoOwnerNickname, string nickname, string albumName, int photoId)
         {
-            //var photoUser = await _photoManager.FindByNickNameAsync(nickname);
-            var user = await _userManager.FindByNickNameAsync(nickname);
-            var photos = await _photoManager.GetUserPhotosByNickNameAndAlbumNameAsync(photoOwnerNickname, albumName);
-            var picture = await Task.Run(() => photos.FirstOrDefault(p => p.Id == photoId));
-            var flag = user.Grades.FirstOrDefault(ug => ug.Picture.Id == picture.Id)?.Graded;
+            var user = await _userManager
+                .FindByNickNameAsync(nickname);
+
+            var photos = await _photoManager
+                .GetUserPhotosByNickNameAndAlbumNameAsync(
+                photoOwnerNickname,
+                albumName
+                );
+
+            var picture = await Task.Run(
+                () => photos.FirstOrDefault(p => p.Id == photoId)
+                );
+
+            var flag = user
+                .Grades
+                .FirstOrDefault(ug => ug.Picture.Id == picture.Id)
+                ?.Graded;
+
             return flag;
         }
 
@@ -180,9 +222,15 @@ namespace TheAGEnt.Core.Controllers
         [AllowAnonymous]
         public async Task<IdentityResult> SetGradesAsync(GradesViewModel grade)
         {
-            return await _photoManager.SetGradesAsync(grade.NickNameOfSender, grade.PhotoOwner, grade.AlbumName, grade.PhotoId,
-                grade.NumberOfGrade);
+            return
+                await
+                    _photoManager.SetGradesAsync(
+                        grade.NickNameOfSender,
+                        grade.PhotoOwner,
+                        grade.AlbumName,
+                        grade.PhotoId,
+                        grade.NumberOfGrade
+                        );
         }
     }
-        
 }
