@@ -15,11 +15,11 @@ namespace TheAGEnt.Domain.Abstract
         Task<List<Album>> GetUserAlbumsNameByNickNameAsync(string nickname);
         Task<List<Picture>> GetUserPhotosByNickNameAndAlbumNameAsync(string nickname,string albumName);
         Task<List<Comment>> GetCommentsToPhotoByIdAsync(string nickName, string albumName, int photoId);
-        Task<IdentityResult> SendCommentsToPhotoByIdAsync(string nickNameOfSender, string photoOwnerNickname, string albumName, int photoId, string message);
+        Task<IdentityResult> SendCommentsToPhotoByIdAsync(string SenderNickname, string photoOwnerNickname, string albumName, int photoId, string message);
 
-        Task<int> GetGradesAverageAsync(string nickNameOfSender, string albumName, int photoId);
+        Task<int> GetGradesAverageAsync(string SenderNickname, string albumName, int photoId);
 
-        Task<IdentityResult> SetGradesAsync(string nickNameOfSender, string photoOwner, string albumName, int photoId,
+        Task<IdentityResult> SetGradesAsync(string SenderNickname, string photoOwner, string albumName, int photoId,
             int grade);
 
         Task<User> FindByNickNameAsync(string nickname);

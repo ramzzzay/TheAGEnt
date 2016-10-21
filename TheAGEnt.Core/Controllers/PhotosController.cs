@@ -115,7 +115,7 @@ namespace TheAGEnt.Core.Controllers
         [Authorize(Roles = "user")]
         public async Task<IHttpActionResult> SendComment(CommentSendViewModel comment)
             => Ok(await _photoManager.SendCommentsToPhotoByIdAsync
-            (comment.NickNameOfSender,
+            (comment.SenderNickname,
                 comment.NickNameOfPhotoOwner,
                 comment.AlbumName,
                 comment.PhotoId,
@@ -225,7 +225,7 @@ namespace TheAGEnt.Core.Controllers
             return
                 await
                     _photoManager.SetGradesAsync(
-                        grade.NickNameOfSender,
+                        grade.SenderNickname,
                         grade.PhotoOwner,
                         grade.AlbumName,
                         grade.PhotoId,

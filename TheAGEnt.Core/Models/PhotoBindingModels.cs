@@ -27,14 +27,14 @@ namespace TheAGEnt.Core.Models
     public class CommentSendViewModel
     {
         public string Message { get; set; }
-        public string NickNameOfSender { get; set; }
+        public string SenderNickname{ get; set; }
         public string NickNameOfPhotoOwner { get; set; }
         public string AlbumName { get; set; }
         public int PhotoId { get; set; }
     }
     public class GradesViewModel
     {
-        public string NickNameOfSender { get; set; }
+        public string SenderNickname{ get; set; }
         public string PhotoOwner { get; set; }
         public string AlbumName { get; set; }
         public int PhotoId { get; set; }

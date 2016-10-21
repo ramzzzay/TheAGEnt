@@ -76,7 +76,7 @@ const Full_Image = React.createClass({
         console.log("log from grades", event, value);
         var data = {
             PhotoOwner: this.props.nicknameOfPhotoOwner,
-            NickNameOfSender: this.props.nickNameOfSender,
+            SenderNickname: this.props.SenderNickname,
             AlbumName: this.props.userAlbumName,
             PhotoId: this.props.imageId,
             NumberOfGrade: value,
@@ -109,7 +109,7 @@ const Full_Image = React.createClass({
     sendMessage: function () {
         var data = {
             NickNameOfPhotoOwner: this.props.nicknameOfPhotoOwner,
-            NickNameOfSender: this.props.nickNameOfSender,
+            SenderNickname: this.props.SenderNickname,
             AlbumName: this.props.userAlbumName,
             PhotoId: this.props.imageId,
             Message: this.state.message
@@ -130,7 +130,7 @@ const Full_Image = React.createClass({
         this.setState({message: e.target.value});
     },
     gradedStatus: function () {
-        fetch(`/api/Photos/GradedCheck?photoOwnerNickname=${this.props.nicknameOfPhotoOwner}&nickname=${this.props.nickNameOfSender}&albumName=${this.props.userAlbumName}&photoId=${this.props.imageId}`, {
+        fetch(`/api/Photos/GradedCheck?photoOwnerNickname=${this.props.nicknameOfPhotoOwner}&nickname=${this.props.SenderNickname}&albumName=${this.props.userAlbumName}&photoId=${this.props.imageId}`, {
             method: "GET",
             headers: new Headers({
                 "Content-Type": "application/json",
@@ -214,7 +214,7 @@ module.exports = React.createClass({
     fullImage: function () {
         return (
             <Full_Image userAlbumName={this.props.params.userAlbumName}
-                        nicknameOfPhotoOwner={this.props.params.user} nickNameOfSender={Cookie.load("nickname")}
+                        nicknameOfPhotoOwner={this.props.params.user} SenderNickname={Cookie.load("nickname")}
                         imageId={this.state.ClickedImageId} imageUrl={this.state.PathToClickedImage}
                         title="Full information" modal={false} open={this.state.openWall}
                         onRequestClose={this.handleCloseWall}/>

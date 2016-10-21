@@ -71,12 +71,12 @@ namespace TheAGEnt.Infrastructure.Infrastructure
                 .SelectMany(c => c.Comment)
                 .ToListAsync();
 
-        public async Task<IdentityResult> SendCommentsToPhotoByIdAsync(string nickNameOfSender,
+        public async Task<IdentityResult> SendCommentsToPhotoByIdAsync(string SenderNickname,
             string photoOwnerNickname, string albumName, int photoId, string message)
         {
             var user = _context
                 .Users
-                .FirstOrDefault(x => x.NickName == nickNameOfSender);
+                .FirstOrDefault(x => x.NickName == SenderNickname);
 
             _context
                 .Users
@@ -118,12 +118,12 @@ namespace TheAGEnt.Infrastructure.Infrastructure
                 .Sum()/grades.Count;
         }
 
-        public async Task<IdentityResult> SetGradesAsync(string nickNameOfSender, string photoOwner, string albumName,
+        public async Task<IdentityResult> SetGradesAsync(string senderNickname, string photoOwner, string albumName,
             int photoId,
             int grade)
         {
             var sender = await _context
-                .Users.FirstOrDefaultAsync(x => x.NickName == nickNameOfSender);
+                .Users.FirstOrDefaultAsync(x => x.NickName == senderNickname);
 
             var user = await _context
                 .Users
