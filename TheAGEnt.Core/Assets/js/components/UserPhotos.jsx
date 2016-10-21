@@ -37,7 +37,8 @@ const Full_Image = React.createClass({
             comments: [],
             message: "",
             graded: false,
-            grade: 0
+            grade: 0,
+            claims: Cookie.load('claims')
         };
     },
     starsComponents: function () {
@@ -73,7 +74,6 @@ const Full_Image = React.createClass({
         this.setState({message: ""});
     },
     sendGrade: function (event, value) {
-        console.log("log from grades", event, value);
         var data = {
             PhotoOwner: this.props.nicknameOfPhotoOwner,
             SenderNickname: this.props.SenderNickname,
@@ -144,6 +144,17 @@ const Full_Image = React.createClass({
         this.getComments();
         this.gradedStatus();
         this.currentGrade();
+        console.log("show context in user photos",this.context)
+    },
+    commentSendForm: function () {
+        return (<div className="Comment-send">
+            <TextField value={this.state.message} onChange={this._messageFieldChange}
+                       hintText="Enter message" multiLine={true}/>
+            <IconButton tooltip="Send" touch={true} onClick={this.sendMessage}
+                        tooltipPosition="bottom-center">
+                <SendIcon color={cyan700}/>
+            </IconButton>
+        </div>)
     },
     render: function () {
         return (
@@ -161,14 +172,8 @@ const Full_Image = React.createClass({
                                     in {c.PostingTime}</div>
                             ))}
                         </div>
-                        <div className="Comment-send">
-                            <TextField value={this.state.message} onChange={this._messageFieldChange}
-                                       hintText="Enter message" multiLine={true}/>
-                            <IconButton tooltip="Send" touch={true} onClick={this.sendMessage}
-                                        tooltipPosition="bottom-center">
-                                <SendIcon color={cyan700}/>
-                            </IconButton>
-                        </div>
+                        {this.state.claims.includes("user") ? this.commentSendForm() : <div></div>}
+
                         <div style={styles.st} className="stars">
                             {this.state.graded ? <div>{this.state.grade}</div> : this.starsComponents()}
                         </div>

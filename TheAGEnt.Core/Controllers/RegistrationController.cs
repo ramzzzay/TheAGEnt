@@ -59,7 +59,7 @@ namespace TheAGEnt.Core.Controllers
 
             var response = await UserManager.CreateAsync(user);
 
-            return response.Succeeded ? (ActionResult) RedirectToRoute("Default") : View(model);
+            return response.Succeeded ? (ActionResult) RedirectToRoute("Default") : RedirectToAction("Index",model);
         }
     }
 }
