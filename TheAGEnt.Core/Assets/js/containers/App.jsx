@@ -10,10 +10,9 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import {Popover, PopoverAnimationVertical} from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import Dialog from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-
 import FormsyText from 'formsy-material-ui/lib/FormsyText';
+import Snackbar from 'material-ui/Snackbar';
 
 const Login_Form = React.createClass({
     getInitialState: function () {
@@ -34,11 +33,6 @@ const Login_Form = React.createClass({
         this.setState({
             canSubmit: false,
         });
-    },
-
-    submitForm(data) {
-        console.log(data);
-        alert(JSON.stringify(data, null, 4));
     },
 
     notifyFormError(data) {
@@ -66,7 +60,7 @@ const Login_Form = React.createClass({
         })
             .then(r => {
                 if (!r.ok) {
-                    alert("Wrong email or password!")
+                    this.props.sendNotification("User with this combination of login and password not found!");
                 } else {
                     return r.json()
                 }
@@ -80,7 +74,7 @@ const Login_Form = React.createClass({
                         this.props.onRequestClose();
                         this.clearForm();
                     } else {
-                        alert("You banned!")
+                        this.props.sendNotification("You banned!");
                     }
                 });
 
@@ -145,13 +139,6 @@ const Login_Form = React.createClass({
                             disabled={!this.state.canSubmit}
                         />
                     </Formsy.Form>
-                    {/*<TextField name="email" value={this.state.email} onChange={this._emailFieldChange}*/}
-                    {/*hintText="Email"*/}
-                    {/*floatingLabelText="Enter please You email here" type="email"/><br/>*/}
-                    {/*<TextField name="password" value={this.state.password} onChange={this._passwordFieldChange}*/}
-                    {/*hintText="Password" floatingLabelText="Enter please You password here"*/}
-                    {/*type="password"/><br/>*/}
-                    {/*<RaisedButton label="Ok, let's start!" primary={true} onClick={this.sendToServer}/>*/}
                 </div>
             </Dialog>
         );
@@ -164,6 +151,8 @@ module.exports = React.createClass({
             open: false,
             openUserMenu: false,
             openLoginWindow: false,
+            openNotification: false,
+            notificationText: "",
             LoggedUserName: Cookie.load('userName'),
             logged: false,
             nickName: Cookie.load('nickname') || "",
@@ -191,6 +180,9 @@ module.exports = React.createClass({
     },
     handleCloseLoginWindow: function () {
         this.setState({openLoginWindow: false});
+    },
+    handleOpenNotification: function (text) {
+        this.setState({openNotification: true,notificationText:text});
     },
     updateAuthState: function (flag, userName, nickName) {
         this.setState({logged: flag, LoggedUserName: userName, nickName: nickName});
@@ -253,7 +245,9 @@ module.exports = React.createClass({
                         modal={false}
                         open={this.state.openLoginWindow}
                         onRequestClose={this.handleCloseLoginWindow}
-                        updateAuthState={this.updateAuthState}/>
+                        updateAuthState={this.updateAuthState}
+                        sendNotification={this.handleOpenNotification}
+                    />
                     <Drawer docked={false} width={200} open={this.state.open}
                             onRequestChange={(open) => this.setState({open})}>
                         <MenuItem href="/" onTouchTap={this.handleClose}>Home</MenuItem>
@@ -264,6 +258,11 @@ module.exports = React.createClass({
                         <MenuItem href="/Swagger" onTouchTap={this.handleClose}>Public API</MenuItem>
                     </Drawer>
                     {this.props.children}
+                    <Snackbar
+                        open={this.state.openNotification}
+                        message={this.state.notificationText}
+                        autoHideDuration={4000}
+                    />
                 </div>
             </MuiThemeProvider>
         );
