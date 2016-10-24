@@ -1,19 +1,13 @@
-import {Link} from 'react-router'
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
-
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-
 import AppBar from 'material-ui/AppBar';
 import MenuItem from 'material-ui/MenuItem';
-
 import Drawer from 'material-ui/Drawer';
-
 import FlatButton from 'material-ui/FlatButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import {Popover, PopoverAnimationVertical} from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
-
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -42,7 +36,6 @@ const Login_Form = React.createClass({
             body: `grant_type=password&username=${this.state.email}&password=${this.state.password}`
         }).then(r => r.json()).then(data => {
             this.getClaims(data.access_token).then(claims => {
-                console.log("log from promise", claims);
                 if (!claims.includes("banned")) {
                     Cookie.save('userName', data.userName);
                     Cookie.save('tokenInfo', data.access_token);
@@ -98,7 +91,7 @@ module.exports = React.createClass({
             openLoginWindow: false,
             LoggedUserName: Cookie.load('userName'),
             logged: false,
-            nickName: Cookie.load('nickname'),
+            nickName: Cookie.load('nickname') || "",
             claims: Cookie.load('claims') || ""
         };
     },
@@ -138,7 +131,7 @@ module.exports = React.createClass({
         this.updateAuthState(false, "", "");
     },
     componentDidMount: function () {
-        if (typeof this.state.LoggedUserName !== "undefined" && this.state.LoggedUserName !== "" && this.state.nickName !== "") {
+        if (this.state.LoggedUserName) {
             this.setState({logged: true});
         } else {
             this.setState({logged: false});
@@ -146,7 +139,7 @@ module.exports = React.createClass({
     },
     componentDidUpdate: function (prevProps, prevState) {
         if (prevState.logged !== this.state.logged) {
-            if (typeof this.state.LoggedUserName !== "undefined" && this.state.LoggedUserName !== "") {
+            if (this.state.LoggedUserName) {
                 this.setState({logged: true});
             } else {
                 this.setState({logged: false});
