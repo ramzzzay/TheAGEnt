@@ -5,6 +5,10 @@
     align-items: center;
 }
 
+.Login .Login-Input {
+    margin: 25px auto;
+}
+
 .Card-image{
     height:70%;
 }

@@ -1,5 +1,6 @@
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
+import Formsy from 'formsy-react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import MenuItem from 'material-ui/MenuItem';
@@ -12,10 +13,38 @@ import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
+import FormsyText from 'formsy-material-ui/lib/FormsyText';
+
 const Login_Form = React.createClass({
     getInitialState: function () {
-        return {email: "", password: ""};
+        return {canSubmit: false, email: "", password: ""};
     },
+
+    errorMessages: {
+        emailError: "Please type a valid Email",
+        passwordError: "Please type a valid Password",
+    },
+    enableButton() {
+        this.setState({
+            canSubmit: true,
+        });
+    },
+
+    disableButton() {
+        this.setState({
+            canSubmit: false,
+        });
+    },
+
+    submitForm(data) {
+        console.log(data);
+        alert(JSON.stringify(data, null, 4));
+    },
+
+    notifyFormError(data) {
+        console.error('Form error:', data);
+    },
+
     _emailFieldChange: function (e) {
         this.setState({email: e.target.value});
     },
@@ -25,7 +54,7 @@ const Login_Form = React.createClass({
     clearForm: function () {
         this.setState({email: "", password: ""});
     },
-    sendToServer: function () {
+    sendToServer: function (data) {
         fetch('/token', {
             credentials: 'include',
             method: 'POST',
@@ -33,21 +62,29 @@ const Login_Form = React.createClass({
                 'Accept': 'application/json, application/xml, text/plain, text/html, *.*',
                 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
             }),
-            body: `grant_type=password&username=${this.state.email}&password=${this.state.password}`
-        }).then(r => r.json()).then(data => {
-            this.getClaims(data.access_token).then(claims => {
-                if (!claims.includes("banned")) {
-                    Cookie.save('userName', data.userName);
-                    Cookie.save('tokenInfo', data.access_token);
-                    this.props.updateAuthState(true, data.userName);
-                    this.props.onRequestClose();
-                    this.clearForm();
+            body: `grant_type=password&username=${data.email}&password=${data.password}`
+        })
+            .then(r => {
+                if (!r.ok) {
+                    alert("Wrong email or password!")
                 } else {
-                    alert("You banned!")
+                    return r.json()
                 }
-            });
+            })
+            .then(data => {
+                this.getClaims(data.access_token).then(claims => {
+                    if (!claims.includes("banned")) {
+                        Cookie.save('userName', data.userName);
+                        Cookie.save('tokenInfo', data.access_token);
+                        this.props.updateAuthState(true, data.userName);
+                        this.props.onRequestClose();
+                        this.clearForm();
+                    } else {
+                        alert("You banned!")
+                    }
+                });
 
-        });
+            });
     },
     getClaims: function (userToken) {
         return new Promise((resolve, reject) => {
@@ -67,16 +104,54 @@ const Login_Form = React.createClass({
         })
     },
     render: function () {
+        let {emailError, passwordError} = this.errorMessages;
         return (
             <Dialog title={this.props.title} modal={this.props.modal} open={this.props.open}
                     onRequestClose={this.props.onRequestClose}>
                 <div ref="loginForm" className="Login">
-                    <TextField name="email" value={this.state.email} onChange={this._emailFieldChange} hintText="Email"
-                               floatingLabelText="Enter please You email here" type="email"/><br/>
-                    <TextField name="password" value={this.state.password} onChange={this._passwordFieldChange}
-                               hintText="Password" floatingLabelText="Enter please You password here"
-                               type="password"/><br/>
-                    <RaisedButton label="Ok, let's start!" primary={true} onClick={this.sendToServer}/>
+                    <Formsy.Form
+                        className="Login"
+                        onValid={this.enableButton}
+                        onInvalid={this.disableButton}
+                        onValidSubmit={this.sendToServer}
+                        onInvalidSubmit={this.notifyFormError}
+                    >
+                        <FormsyText
+                            className="Login-Input"
+                            name="email"
+                            validations="isEmail"
+                            validationError={emailError}
+                            required
+                            hintText="Email"
+                            floatingLabelText="Enter please You email here"
+                            updateImmediately
+                        />
+                        <FormsyText
+                            className="Login-Input"
+                            name="password"
+                            type="password"
+                            validations="minLength:6"
+                            validationError={passwordError}
+                            required
+                            hintText="Password"
+                            floatingLabelText="Enter please You password here"
+                            updateImmediately
+                        />
+                        <RaisedButton
+                            className="Login-Input"
+                            type="submit"
+                            label="Ok, let's start!"
+                            primary={true}
+                            disabled={!this.state.canSubmit}
+                        />
+                    </Formsy.Form>
+                    {/*<TextField name="email" value={this.state.email} onChange={this._emailFieldChange}*/}
+                    {/*hintText="Email"*/}
+                    {/*floatingLabelText="Enter please You email here" type="email"/><br/>*/}
+                    {/*<TextField name="password" value={this.state.password} onChange={this._passwordFieldChange}*/}
+                    {/*hintText="Password" floatingLabelText="Enter please You password here"*/}
+                    {/*type="password"/><br/>*/}
+                    {/*<RaisedButton label="Ok, let's start!" primary={true} onClick={this.sendToServer}/>*/}
                 </div>
             </Dialog>
         );

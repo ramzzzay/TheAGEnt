@@ -27,6 +27,8 @@
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
     "font-awesome": "^4.6.3",
+    "formsy-material-ui": "^0.5.2",
+    "formsy-react": "^0.18.1",
     "material-ui": "^0.16.0",
     "react": "^15.3.2",
     "react-cookie": "^0.4.8",
