@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -169,6 +171,30 @@ namespace TheAGEnt.Core.Controllers
                     Msg = response.Errors,
                     IsOk = response.Succeeded
                 });
+        }
+
+        [Route("UploadImage")]
+        // POST api/Photos/UploadImage
+        [MimeMultipart]
+        [Authorize(Roles = "user")]
+        public async Task<IHttpActionResult> UploadAvatar()
+        {
+            //var uploadPath = HttpContext.Current.Server.MapPath("~/Assets/imgs/ProfileImages/Images/tmp");
+
+            //var multipartFormDataStreamProvider = new UploadMultipartFormProvider(uploadPath);
+            //await Request.Content.ReadAsMultipartAsync(multipartFormDataStreamProvider);
+
+            var content = await Request.Content.ReadAsMultipartAsync();
+            MultipartFormDataContent c = new MultipartFormDataContent();
+            //var provided = new MultipartFileStreamProvider();
+            //if (content["type"] == "avatar")
+            //{
+
+            //}
+
+            // Read the MIME multipart asynchronously 
+
+            return Ok();
         }
 
         // GET api/Photos/GetGrades

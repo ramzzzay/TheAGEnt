@@ -34,6 +34,7 @@ module.exports = {
 
         ]
     },
+    devtool: 'source-map',
     plugins: [
   new WebpackNotifierPlugin(),
   new Webpack.optimize.DedupePlugin(),

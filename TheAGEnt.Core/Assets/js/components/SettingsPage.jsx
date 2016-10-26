@@ -8,10 +8,11 @@ import {
 } from "material-ui/Card";
 import {Tabs, Tab} from "material-ui/Tabs";
 import SwipeableViews from "react-swipeable-views";
-import ImageUpload from "./ImageUpload.jsx";
 import UpdateUserInfo from "./UpdateUserInfo.jsx";
 import AlbumsUpdate from "./AlbumsUpdate.jsx";
 import Avatar from "material-ui/Avatar";
+import Uploader from "./FileUploader";
+
 
 const Av = React.createClass({
     render: function () {
@@ -115,12 +116,14 @@ module.exports = React.createClass({
                         </Tabs>
                         <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}>
                             <div className="UploadAvatar">
-                                <ImageUpload url="api/Account/UploadUserAvatar" name="avatar"
-                                             changeState={this.changingPathToAvatar}/>
+                                <Uploader type="avatar"
+                                          url="api/Account/UploadUserAvatar"
+                                          changeState={this.changingPathToAvatar}/>
                             </div>
                             <div style={styles.slide} className="UploadCard">
-                                <ImageUpload url="api/Account/UploadUserCard" name="card"
-                                             changeState={this.changingPathToCard}/>
+                                <Uploader type="card"
+                                          url="api/Account/UploadUserCard"
+                                          changeState={this.changingPathToCard}/>
                             </div>
                             <div style={styles.slide}>
                                 <UpdateUserInfo changingUserInfo={this.changingUserInfo} email={this.state.email}

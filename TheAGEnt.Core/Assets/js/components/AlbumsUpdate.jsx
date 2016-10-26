@@ -1,28 +1,14 @@
 import AutoComplete from "material-ui/AutoComplete";
 import RaisedButton from "material-ui/RaisedButton";
+
 import DropzoneComponent from "react-dropzone-component"
+import Uploader from "./FileUploader";
 
 module.exports = React.createClass({
     getInitialState: function () {
         return {
             albumName: "",
             albums: [],
-            componentConfig: {
-                postUrl: "api/Photos/UploadUserImage"
-            },
-            djsConfig: {
-                addRemoveLinks: true,
-                headers: {
-                    "Authorization": "bearer " + Cookie.load("tokenInfo")
-                }
-            },
-            eventHandlers: {
-                sending: (file, xhr, formData) => {
-                    formData.append("Email", this.props.email);
-                    formData.append("Album", this.state.albumName);
-                },
-                success: (file, response) => this.getAlbums()
-            }
         };
     },
     componentDidMount: function () {
@@ -49,9 +35,11 @@ module.exports = React.createClass({
                 <AutoComplete onUpdateInput={this._albumNameFieldChange} onNewRequest={this._albumNameFieldChange}
                               floatingLabelText="showAllItems" filter={AutoComplete.fuzzyFilter} openOnFocus={true}
                               dataSource={this.state.albums}/><br/>
-                <DropzoneComponent config={this.state.componentConfig} eventHandlers={this.state.eventHandlers}
-                                   djsConfig={this.state.djsConfig}/>
-                <RaisedButton label="Ok, save my new info!" primary={true} onClick={this.sendToServer}/>
+                <Uploader type="photos"
+                          url="api/Photos/UploadUserImage"
+                          changeState={this.changingPathToCard}
+                          email={this.props.email}
+                          albumName={this.state.albumName}/>
             </div>)
     }
 });
