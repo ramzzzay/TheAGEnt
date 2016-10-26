@@ -13,6 +13,7 @@ namespace TheAGEnt.Domain.Abstract
         Task<IdentityResult> CreateAsync(User u);
         Task<List<User>> GetAllUsersAsync();
         Task<IdentityResult> AddClaimToUserAsync(string email, string claimName);
+        Task<IdentityResult> RemoveClaimToUserAsync(string email, string claimName);
         Task<User> FindAsync(string name, string password);
         Task<ClaimsIdentity> CreateIdentityAsync(User user, string authenticationType);
         Task<User> FindByIdAsync(string userId);

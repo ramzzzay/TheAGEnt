@@ -140,6 +140,17 @@ namespace TheAGEnt.Infrastructure.Infrastructure
                 );
         }
 
+        public async Task<IdentityResult> RemoveClaimToUserAsync(string email, string claimName)
+        {
+            var user = await _applicationUserManager
+                .FindByEmailAsync(email);
+
+            return await _applicationUserManager.RemoveClaimAsync(
+                user.Id,
+                new Claim(ClaimTypes.Role, claimName)
+                );
+        }
+
         public async Task<User> FindByEmailAsync(string email)
         {
             return await _applicationUserManager

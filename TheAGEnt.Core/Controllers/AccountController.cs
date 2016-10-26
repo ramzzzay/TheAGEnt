@@ -309,11 +309,24 @@ namespace TheAGEnt.Core.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IHttpActionResult> AddClaim(ClaimAddModel c)
         {
-            if (!ModelState.IsValid) return BadRequest("Something frong with adding claim to user!");
+            if (!ModelState.IsValid) return BadRequest("Something wrong with adding claim to user!");
 
             var response = await UserManager.AddClaimToUserAsync(c.Email, c.NameOfClaim);
 
             return Ok(new {Msg = response.Errors, IsOk = response.Succeeded});
+        }
+
+        // POST api/Account/RemoveClaim
+        [Route("RemoveClaim")]
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public async Task<IHttpActionResult> RemoveClaim(ClaimAddModel c)
+        {
+            if (!ModelState.IsValid) return BadRequest("Something wrong with removing claim to user!");
+
+            var response = await UserManager.RemoveClaimToUserAsync(c.Email, c.NameOfClaim);
+
+            return Ok(new { Msg = response.Errors, IsOk = response.Succeeded });
         }
 
         // POST api/Account/Register
